@@ -1,0 +1,21 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Django local database
+*.sqlite3
+db.sqlite3
+
+# Environment variables (secrets, passwords, API keys)
+.env
+
+# IDE and OS files
+.vscode/
+.idea/
+*.DS_Store
