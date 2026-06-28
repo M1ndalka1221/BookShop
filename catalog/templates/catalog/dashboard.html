@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalog Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; line-height: 1.6; }
+        h1 { border-bottom: 2px solid #333; padding-bottom: 10px; }
+        h2 { color: #2c3e50; margin-top: 30px; }
+        .card { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+        .badge { background: #007bff; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <h1>📚 Catalog Dashboard</h1>
+
+    <h2>Categories Overview (Annotate)</h2>
+    <ul>
+        {% for category in categories %}
+            <li>
+                <strong>{{ category.name }}</strong>
+                <span class="badge">{{ category.books_count }} books</span>
+            </li>
+        {% empty %}
+            <li>No categories found.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Search Results: 'Django' OR 'Python' (Q-Objects)</h2>
+    {% for book in search_results %}
+        <div class="card">
+            <strong>{{ book.title }}</strong> by {{ book.author }}<br>
+            <small>Category: {{ book.category.name }}</small>
+        </div>
+    {% empty %}
+        <p>No books matched the search criteria.</p>
+    {% endfor %}
+
+    <h2>Currently In Stock (Filter)</h2>
+    {% for book in available_books %}
+        <div class="card">
+            <strong>{{ book.title }}</strong> - ${{ book.price }}<br>
+            <small>Stock remaining: {{ book.stock }} units</small>
+        </div>
+    {% empty %}
+        <p>No books are currently in stock.</p>
+    {% endfor %}
+
+</body>
+</html>
