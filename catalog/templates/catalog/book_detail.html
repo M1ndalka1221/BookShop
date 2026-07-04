@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-dark text-white">
+        <h3>{{ book.title }}</h3>
+    </div>
+    <div class="card-body">
+        <p><strong>Author:</strong> {{ book.author }}</p>
+        <p><strong>Category:</strong> {{ book.category.name }}</p>
+        <p><strong>Price:</strong> ${{ book.price }}</p>
+        <p><strong>Stock:</strong> {{ book.stock }}</p>
+        <hr>
+        <p>{{ book.description }}</p>
+        
+        <div class="mt-4">
+            <a href="{% url 'catalog:book_update' book.pk %}" class="btn btn-warning">Edit</a>
+            <a href="{% url 'catalog:book_delete' book.pk %}" class="btn btn-danger">Delete</a>
+            <a href="{% url 'catalog:book_list' %}" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

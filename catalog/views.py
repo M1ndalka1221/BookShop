@@ -1,16 +1,48 @@
-from django.shortcuts import render
-from django.db.models import Count, Q
-from .models import Book, Category
+from django.urls import reverse_lazy
+from django.db.models import Q
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Book
+
 # Create your views here.
 
-def catalog_dashboard(request):
-    available_books = Book.objects.filter(stock__gt=0)
-    search_results = Book.objects.filter(Q(title__icontains="Django") | Q(author__icontains="Python"))
-    categories_with_count = Category.objects.annotate(books_count=Count('books'))
-    context = {
-        "available_books": available_books,
-        "search_results": search_results,
-        "categories": categories_with_count,
-    }
+class BookListView(ListView):
+    model = Book
+    template_name = "catalog/book_list.html"
+    context_object_name = "books"
+    paginate_by = 5
 
-    return render(request, 'catalog/dashboard.html', context)
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get("q")
+        if query:
+            queryset = queryset.filter(
+                Q(title__icontains=query) | Q(author__icontains=query)
+            )
+        return queryset
+
+class BookDetailView(DetailView):
+    model = Book
+    template_name = "catalog/book_detail.html"
+    context_object_name = "book"
+
+
+class BookCreateView(CreateView):
+    model = Book
+    template_name = 'catalog/book_form.html'
+    fields = ['category', 'title', 'author', 'price', 'description', 'stock']
+    success_url = reverse_lazy('catalog:book_list')
+
+
+class BookUpdateView(UpdateView):
+    model = Book
+    template_name = 'catalog/book_form.html'
+    fields = ['category', 'title', 'author', 'price', 'description', 'stock']
+
+    def get_success_url(self):
+        return reverse_lazy('catalog:book_detail', kwargs={'pk': self.object.pk})
+
+
+class BookDeleteView(DeleteView):
+    model = Book
+    template_name = 'catalog/book_confirm_delete.html'
+    success_url = reverse_lazy('catalog:book_list')
