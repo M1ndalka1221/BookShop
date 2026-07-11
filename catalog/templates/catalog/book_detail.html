@@ -14,8 +14,12 @@
         <p>{{ book.description }}</p>
         
         <div class="mt-4">
+            {% if perms.catalog.change_book %}
             <a href="{% url 'catalog:book_update' book.pk %}" class="btn btn-warning">Edit</a>
+            {% endif %}
+            {% if perms.catalog.delete_book %}
             <a href="{% url 'catalog:book_delete' book.pk %}" class="btn btn-danger">Delete</a>
+            {% endif %}
             <a href="{% url 'catalog:book_list' %}" class="btn btn-secondary">Back to List</a>
         </div>
     </div>
