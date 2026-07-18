@@ -1,0 +1,152 @@
+[
+{
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+        "action_time": "2026-07-11T15:41:26.671Z",
+        "user": 1,
+        "content_type": 2,
+        "object_id": "1",
+        "object_repr": "Managers",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+        "action_time": "2026-07-11T15:43:54.168Z",
+        "user": 1,
+        "content_type": 7,
+        "object_id": "1",
+        "object_repr": "MyCategory",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"Book\", \"object\": \"MyBook\"}}, {\"added\": {\"name\": \"Book\", \"object\": \"NewBook\"}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+        "action_time": "2026-07-11T15:47:00.540Z",
+        "user": 1,
+        "content_type": 8,
+        "object_id": "2",
+        "object_repr": "M1ndalka",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Groups\"]}}]"
+    }
+},
+{
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+        "name": "Managers",
+        "permissions": [
+            25,
+            26,
+            27
+        ]
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "gviyhx33ocolxx1x6id21mumhw8m5gid",
+    "fields": {
+        "session_data": ".eJxVjDEOwjAMAP_iGUVp6oDbkZ03VI7tkgJqpKadEH9HlTrAene6Nwy8rXnYqi3DpNBDA6dfllieNu9CHzzfi5Myr8uU3J64w1Z3K2qv69H-DTLXDD204kW6wF4YfTSihs5RCccUPCFZi0LYtULqWdCSWifEIaL6SxiF4fMF4H84Lg:1wia8x:z8oGw3YwQE4GZxtetbI0EZMG6TRAUbX0PP1Cg675Pik",
+        "expire_date": "2026-07-25T16:01:31.381Z"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+        "name": "MyCategory",
+        "slug": "mycategory"
+    }
+},
+{
+    "model": "catalog.book",
+    "pk": 1,
+    "fields": {
+        "category": 1,
+        "title": "MyBook",
+        "author": "NotMe",
+        "price": "67.00",
+        "description": "sdsaddassda",
+        "stock": 10
+    }
+},
+{
+    "model": "catalog.book",
+    "pk": 4,
+    "fields": {
+        "category": 1,
+        "title": "sadsa",
+        "author": "gawfasd",
+        "price": "123.00",
+        "description": "sdaaddsas",
+        "stock": 12
+    }
+},
+{
+    "model": "users.customuser",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$rb4PWbn58aAxw2GXNILEc7$h6itFtUJG9aRVTqGs+wLpsi+uV1e/Uaho0kbFGo+8OY=",
+        "last_login": "2026-07-11T16:01:31.377Z",
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "email": "admin@gmail.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2026-07-11T15:27:06.197Z",
+        "bio": null,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.customuser",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$p9rM4307scR9FrXzpILjvC$WSmcCaIyt2XG1JGwDmCLSNmfYU8YZLnpDIPci7fKykI=",
+        "last_login": "2026-07-11T15:47:14.998Z",
+        "is_superuser": false,
+        "username": "M1ndalka",
+        "first_name": "",
+        "last_name": "",
+        "email": "geka.korol2007@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-07-11T15:42:01Z",
+        "bio": null,
+        "groups": [
+            1
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.customuser",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$7oQVR1WDpHVyne9MIjlvLc$xPRe7ehuiFhDvd9jE6IhMZIt4pJJJp6jgcsC9KXusjI=",
+        "last_login": "2026-07-11T15:51:44.195Z",
+        "is_superuser": false,
+        "username": "EugeneHard",
+        "first_name": "",
+        "last_name": "",
+        "email": "myemail@gmail.com",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2026-07-11T15:51:42.360Z",
+        "bio": null,
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]
