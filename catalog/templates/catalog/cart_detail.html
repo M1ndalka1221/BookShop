@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Your Shopping Cart{% endblock %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-12">
+        <h2 class="mb-4">🛒 Your Shopping Cart</h2>
+        
+        {% if cart|length > 0 %}
+            <div class="table-responsive shadow-sm rounded">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Book</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in cart %}
+                            <tr>
+                                <td><strong>{{ item.book.title }}</strong><br><small class="text-muted">{{ item.book.author }}</small></td>
+                                <td>{{ item.quantity }}</td>
+                                <td>${{ item.price }}</td>
+                                <td><strong>${{ item.total_price }}</strong></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="table-light">
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Total Cart Value:</strong></td>
+                            <td><h5 class="text-success mb-0">${{ cart.get_total_price }}</h5></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'catalog:book_list' %}" class="btn btn-outline-secondary">← Continue Shopping</a>
+                <a href="{% url 'catalog:checkout' %}" class="btn btn-primary btn-lg">Proceed to Checkout →</a>
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center shadow-sm">
+                <h4 class="alert-heading">Your cart is empty!</h4>
+                <p>Looks like you haven't added any books yet.</p>
+                <hr>
+                <a href="{% url 'catalog:book_list' %}" class="btn btn-primary">Browse Books</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

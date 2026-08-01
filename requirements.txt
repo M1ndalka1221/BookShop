@@ -4,3 +4,4 @@ redis>=5.0
 django-redis>=5.4
 python-dotenv>=1.0
 django-debug-toolbar>=4.0
+stripe>=8.0.0

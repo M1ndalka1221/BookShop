@@ -1,12 +1,23 @@
-from django.urls import reverse_lazy
+from decimal import Decimal
+
+import stripe
+from django.urls import reverse_lazy, reverse
+from django.conf import settings
 from django.db.models import Q
+from django.db import transaction
+from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from .models import Book
+from .models import Book, Order, OrderItem
+from .cart import Cart
 
 # Create your views here.
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
 
 class BookListView(ListView):
     model = Book
@@ -60,3 +71,72 @@ class BookDeleteView(LoginRequiredMixin, CustomPermissionRequiredMixin, DeleteVi
     template_name = 'catalog/book_confirm_delete.html'
     success_url = reverse_lazy('catalog:book_list')
     permission_required = 'catalog.delete_book'
+
+
+@login_required
+def cart_detail(request):
+    cart = Cart(request)
+    return render(request, 'catalog/cart_detail.html', {'cart': cart})
+
+
+@login_required
+def cart_add(request, book_id):
+    cart = Cart(request)
+    book = get_object_or_404(Book, id=book_id)
+    cart.add(book=book)
+    return redirect('catalog:cart_detail')
+
+
+@login_required
+def checkout(request):
+    cart = Cart(request)
+    if request.method == 'POST':
+        with transaction.atomic():
+            order = Order.objects.create(user=request.user)
+
+            for item in cart:
+                OrderItem.objects.create(
+                    order=order,
+                    book=item['book'],
+                    price=item['price'],
+                    quantity=item['quantity']
+                )
+                book = item['book']
+                book.stock -= item['quantity']
+                book.save()
+            cart.clear()
+            subject = f'Order nr. {order.id}'
+            message = f'Dear {order.user.username},\n\nYou have successfully placed an order. Your order ID is {order.id}.'
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [order.user.email])
+        session_data = {
+            'mode': 'payment',
+            'client_reference_id': order.id,
+            'success_url': request.build_absolute_uri(reverse('catalog:payment_success')),
+            'cancel_url': request.build_absolute_uri(reverse('catalog:cart_detail')),
+            'line_items': []
+        }
+
+        for item in order.items.all():
+            session_data['line_items'].append({
+                'price_data': {
+                    'unit_amount': int(item.price * Decimal('100')),
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': item.book.title,
+                    },
+                },
+                'quantity': item.quantity,
+            })
+
+        checkout_session = stripe.checkout.Session.create(**session_data)
+
+        order.stripe_id = checkout_session.id
+        order.save()
+        return redirect(checkout_session.url, code=303)
+
+    return render(request, 'catalog/checkout.html', {'cart': cart})
+
+
+@login_required
+def payment_success(request):
+    return render(request, 'catalog/success.html')

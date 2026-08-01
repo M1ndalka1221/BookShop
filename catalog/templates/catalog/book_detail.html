@@ -21,6 +21,7 @@
             <a href="{% url 'catalog:book_delete' book.pk %}" class="btn btn-danger">Delete</a>
             {% endif %}
             <a href="{% url 'catalog:book_list' %}" class="btn btn-secondary">Back to List</a>
+            <a href="{% url 'catalog:cart_add' book.id %}" class="btn btn-success btn-sm">Add to Cart</a>
         </div>
     </div>
 </div>
