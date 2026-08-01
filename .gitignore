@@ -19,3 +19,7 @@ db.sqlite3
 .vscode/
 .idea/
 *.DS_Store
+
+# Logs
+debug.log
+*.log
