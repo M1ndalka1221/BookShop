@@ -30,7 +30,9 @@ class Cart:
             self.save()
 
     def clear(self):
-        del self.session['cart']
+        self.cart.clear()
+        if 'cart' in self.session:
+            del self.session['cart']
         self.save()
 
     def save(self):

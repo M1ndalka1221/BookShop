@@ -23,3 +23,8 @@ db.sqlite3
 # Logs
 debug.log
 *.log
+
+# Coverage & Pytest cache
+.coverage
+htmlcov/
+.pytest_cache/

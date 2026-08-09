@@ -8,6 +8,7 @@ from django.db import transaction
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -83,6 +84,9 @@ def cart_detail(request):
 def cart_add(request, book_id):
     cart = Cart(request)
     book = get_object_or_404(Book, id=book_id)
+    if book.stock < 1:
+        messages.error(request, f"Sorry, '{book.title}' is currently out of stock.")
+        return redirect('catalog:book_list')
     cart.add(book=book)
     return redirect('catalog:cart_detail')
 
@@ -90,49 +94,74 @@ def cart_add(request, book_id):
 @login_required
 def checkout(request):
     cart = Cart(request)
+    if len(cart) == 0:
+        messages.warning(request, "Your cart is empty.")
+        return redirect('catalog:cart_detail')
+
     if request.method == 'POST':
-        with transaction.atomic():
-            order = Order.objects.create(user=request.user)
+        try:
+            with transaction.atomic():
+                book_ids = [item['book'].id for item in cart]
+                books_db = {b.id: b for b in Book.objects.select_for_update().filter(id__in=book_ids)}
 
-            for item in cart:
-                OrderItem.objects.create(
-                    order=order,
-                    book=item['book'],
-                    price=item['price'],
-                    quantity=item['quantity']
-                )
-                book = item['book']
-                book.stock -= item['quantity']
-                book.save()
-            cart.clear()
-            subject = f'Order nr. {order.id}'
-            message = f'Dear {order.user.username},\n\nYou have successfully placed an order. Your order ID is {order.id}.'
-            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [order.user.email])
-        session_data = {
-            'mode': 'payment',
-            'client_reference_id': order.id,
-            'success_url': request.build_absolute_uri(reverse('catalog:payment_success')),
-            'cancel_url': request.build_absolute_uri(reverse('catalog:cart_detail')),
-            'line_items': []
-        }
+                # Check stock availability for all items before placing order
+                for item in cart:
+                    book = books_db.get(item['book'].id)
+                    if not book or book.stock < item['quantity']:
+                        messages.error(
+                            request,
+                            f"Sorry, '{item['book'].title}' does not have enough stock available."
+                        )
+                        return redirect('catalog:cart_detail')
 
-        for item in order.items.all():
-            session_data['line_items'].append({
-                'price_data': {
-                    'unit_amount': int(item.price * Decimal('100')),
-                    'currency': 'usd',
-                    'product_data': {
-                        'name': item.book.title,
+                order = Order.objects.create(user=request.user)
+
+                for item in cart:
+                    OrderItem.objects.create(
+                        order=order,
+                        book=item['book'],
+                        price=item['price'],
+                        quantity=item['quantity']
+                    )
+                    book = books_db[item['book'].id]
+                    book.stock -= item['quantity']
+                    book.save()
+
+                cart.clear()
+                subject = f'Order nr. {order.id}'
+                message = f'Dear {order.user.username},\n\nYou have successfully placed an order. Your order ID is {order.id}.'
+                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [order.user.email])
+
+            session_data = {
+                'mode': 'payment',
+                'client_reference_id': order.id,
+                'success_url': request.build_absolute_uri(reverse('catalog:payment_success')),
+                'cancel_url': request.build_absolute_uri(reverse('catalog:cart_detail')),
+                'line_items': []
+            }
+
+            for item in order.items.select_related('book').all():
+                session_data['line_items'].append({
+                    'price_data': {
+                        'unit_amount': int(item.price * Decimal('100')),
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': item.book.title,
+                        },
                     },
-                },
-                'quantity': item.quantity,
-            })
+                    'quantity': item.quantity,
+                })
 
-        checkout_session = stripe.checkout.Session.create(**session_data)
+            checkout_session = stripe.checkout.Session.create(**session_data)
 
-        order.stripe_id = checkout_session.id
-        order.save()
-        return redirect(checkout_session.url, code=303)
+            order.stripe_id = checkout_session.id
+            order.save()
+            response = HttpResponseRedirect(checkout_session.url)
+            response.status_code = 303
+            return response
+        except stripe.error.StripeError as e:
+            messages.error(request, f"Payment error: {str(e)}")
+            return redirect('catalog:cart_detail')
 
     return render(request, 'catalog/checkout.html', {'cart': cart})
 
