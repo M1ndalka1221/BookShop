@@ -1,38 +1,72 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Checkout{% endblock %}
+{% block title %}{% trans "Secure Checkout" %} | BookShop{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-5">
-    <div class="col-md-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">
-                <h3 class="mb-0">Secure Checkout</h3>
+<div class="row justify-content-center my-4">
+    <div class="col-lg-8">
+        <!-- Main Checkout Container -->
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="fs-1 mb-2">🔒</div>
+                <h3 class="fw-bold">{% trans "Secure Checkout" %}</h3>
+                <p class="text-white-50 mb-0">{% trans "Complete your order with Stripe secure payment processing" %}</p>
             </div>
-            <div class="card-body">
-                <h5 class="mb-3">Order Summary</h5>
-                <ul class="list-group mb-4">
-                    {% for item in cart %}
-                        <li class="list-group-item d-flex justify-content-between lh-sm">
-                            <div>
-                                <h6 class="my-0">{{ item.book.title }}</h6>
-                                <small class="text-muted">Quantity: {{ item.quantity }}</small>
-                            </div>
-                            <span class="text-muted">${{ item.total_price }}</span>
-                        </li>
-                    {% endfor %}
-                    <li class="list-group-item d-flex justify-content-between bg-light">
-                        <span class="text-success"><strong>Total (USD)</strong></span>
-                        <strong class="text-success">${{ cart.get_total_price }}</strong>
-                    </li>
-                </ul>
+            
+            <div class="auth-body p-4 p-md-5">
+                <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                    <span>📑</span> {% trans "Order Items Breakdown" %}
+                </h5>
 
+                <div class="list-group list-group-flush mb-4 rounded-3 border overflow-hidden">
+                    {% for item in cart %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="fs-4">📖</span>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">{{ item.book.title }}</h6>
+                                    <small class="text-muted">{% trans "Quantity:" %} {{ item.quantity }} &times; ${{ item.price }}</small>
+                                </div>
+                            </div>
+                            <span class="fw-bold text-dark font-monospace">${{ item.total_price }}</span>
+                        </div>
+                    {% endfor %}
+                    
+                    <div class="list-group-item d-flex justify-content-between align-items-center bg-light py-3">
+                        <div>
+                            <span class="fw-bold fs-5 text-dark">{% trans "Total Amount Due" %}</span>
+                            <div class="small text-muted">{% trans "All taxes included" %}</div>
+                        </div>
+                        <span class="price-tag fs-2 text-success">${{ cart.get_total_price }}</span>
+                    </div>
+                </div>
+
+                <!-- Payment Form -->
                 <form action="{% url 'catalog:checkout' %}" method="POST">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-success btn-lg w-100 fw-bold">
-                        🔒 Pay with Stripe
+                    <button type="submit" class="btn btn-success btn-lg w-100 fw-bold py-3 fs-5 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                        <span>💳 {% blocktrans with amount=cart.get_total_price %}Pay ${{ amount }} with Stripe{% endblocktrans %}</span>
                     </button>
                 </form>
+
+                <!-- Security Guarantees -->
+                <div class="mt-4 pt-4 border-top">
+                    <div class="row g-3 text-center text-muted small">
+                        <div class="col-4">
+                            <span class="d-block fs-5 mb-1">🔐</span>
+                            <span>{% trans "256-Bit SSL" %}</span>
+                        </div>
+                        <div class="col-4">
+                            <span class="d-block fs-5 mb-1">⚡</span>
+                            <span>{% trans "Instant Access" %}</span>
+                        </div>
+                        <div class="col-4">
+                            <span class="d-block fs-5 mb-1">🛡️</span>
+                            <span>{% trans "Buyer Protection" %}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

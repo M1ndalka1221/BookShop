@@ -69,4 +69,22 @@ def test_payment_success_view_requires_login(client, user):
     url = reverse('catalog:payment_success')
     client.force_login(user)
     response = client.get(url)
-    assert response.status_code == 200
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_language_switch_to_ukrainian(client, book):
+    # Change language to Ukrainian via i18n set_language view
+    set_lang_url = reverse('set_language')
+    response = client.post(set_lang_url, {'language': 'uk', 'next': '/'})
+    assert response.status_code == 302
+
+    # Verify that home page renders Ukrainian localized text
+    list_url = reverse('catalog:book_list')
+    page_response = client.get(list_url)
+    assert page_response.status_code == 200
+    content = page_response.content.decode('utf-8')
+    assert "Досліджувати книги" in content
+    assert "Каталог книг" in content
+    assert "Кошик" in content
+

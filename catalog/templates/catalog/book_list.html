@@ -1,36 +1,123 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
-<h2 class="mb-4">Book Catalog</h2>
+<!-- Hero Banner Section -->
+<div class="hero-banner">
+    <div class="row align-items-center">
+        <div class="col-lg-8">
+            <span class="hero-tag">✨ {% trans "Discover Your Next Favorite Read" %}</span>
+            <h1 class="hero-title">{% trans "Explore Our Curated World of Knowledge & Stories" %}</h1>
+            <p class="hero-subtitle">{% trans "Find bestsellers, academic classics, modern fiction, and rare gems — delivered straight to your collection." %}</p>
+        </div>
+    </div>
+</div>
 
-<div class="row">
+<!-- Section Header & Filter Controls -->
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold mb-1">{% trans "Book Catalog" %}</h3>
+        {% if request.GET.q %}
+            <p class="text-muted mb-0">{% trans "Showing search results for:" %} <span class="fw-semibold text-primary">"{{ request.GET.q }}"</span></p>
+        {% else %}
+            <p class="text-muted mb-0">{% trans "Browse through all available titles in our store" %}</p>
+        {% endif %}
+    </div>
+
+    {% if user.is_authenticated and user.is_staff %}
+    <a href="{% url 'catalog:book_create' %}" class="btn btn-success d-inline-flex align-items-center gap-2">
+        <span>➕</span> {% trans "Add New Book" %}
+    </a>
+    {% endif %}
+</div>
+
+<!-- Books Grid -->
+<div class="row g-4">
     {% for book in books %}
-    <div class="col-md-4 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">{{ book.title }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">{{ book.author }}</h6>
-                <p class="card-text">Price: ${{ book.price }}</p>
-                <a href="{% url 'catalog:book_detail' book.pk %}" class="btn btn-primary btn-sm">View Details</a>
+    <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="card-modern h-100 d-flex flex-column">
+            <!-- Book Cover Art Container -->
+            <div class="book-cover-box">
+                <div class="book-cover-icon">📘</div>
+                <div class="book-cover-title">{{ book.title }}</div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body p-3 d-flex flex-column justify-content-between flex-grow-1">
+                <div>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        {% if book.category %}
+                            <span class="badge-category">{{ book.category.name }}</span>
+                        {% endif %}
+                        {% if book.stock > 0 %}
+                            <span class="badge-stock">{% trans "In Stock" %} ({{ book.stock }})</span>
+                        {% else %}
+                            <span class="badge-stock-out">{% trans "Out of Stock" %}</span>
+                        {% endif %}
+                    </div>
+
+                    <h5 class="fw-bold mb-1 text-truncate" title="{{ book.title }}">{{ book.title }}</h5>
+                    <p class="text-muted small mb-3">{% trans "by" %} {{ book.author }}</p>
+                </div>
+
+                <div>
+                    <div class="d-flex justify-content-between align-items-center my-3 pt-2 border-top">
+                        <span class="text-muted small">{% trans "Price" %}</span>
+                        <span class="price-tag">${{ book.price }}</span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'catalog:book_detail' book.pk %}" class="btn btn-sm btn-outline-primary w-100">
+                            {% trans "View Details" %}
+                        </a>
+                        {% if book.stock > 0 %}
+                        <a href="{% url 'catalog:cart_add' book.id %}" class="btn btn-sm btn-primary w-100 d-flex align-items-center justify-content-center gap-1">
+                            <span>🛒</span> {% trans "Add to Cart" %}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     {% empty %}
-    <div class="alert alert-warning">No books found.</div>
+    <div class="col-12 py-5">
+        <div class="text-center p-5 bg-white rounded-4 shadow-sm border">
+            <div class="fs-1 mb-3">🔍</div>
+            <h4 class="fw-bold">{% trans "No books found" %}</h4>
+            <p class="text-muted mb-4">{% trans "We couldn't find any books matching your criteria." %}</p>
+            {% if request.GET.q %}
+                <a href="{% url 'catalog:book_list' %}" class="btn btn-primary">{% trans "Clear Search" %}</a>
+            {% endif %}
+        </div>
+    </div>
     {% endfor %}
 </div>
 
+<!-- Pagination Controls -->
 {% if is_paginated %}
-<nav aria-label="Page navigation" class="mt-4">
-    <ul class="pagination justify-content-center">
+<nav aria-label="Book catalog pagination" class="mt-5">
+    <ul class="pagination justify-content-center gap-1">
         {% if page_obj.has_previous %}
-        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a></li>
+        <li class="page-item">
+            <a class="page-link rounded-3 border-0 shadow-sm" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                &laquo; {% trans "Previous" %}
+            </a>
+        </li>
         {% endif %}
         
-        <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+        <li class="page-item disabled">
+            <span class="page-link rounded-3 border-0 bg-primary text-white fw-bold shadow-sm">
+                {% blocktrans with number=page_obj.number total=page_obj.paginator.num_pages %}Page {{ number }} of {{ total }}{% endblocktrans %}
+            </span>
+        </li>
         
         {% if page_obj.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a></li>
+        <li class="page-item">
+            <a class="page-link rounded-3 border-0 shadow-sm" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">
+                {% trans "Next" %} &raquo;
+            </a>
+        </li>
         {% endif %}
     </ul>
 </nav>

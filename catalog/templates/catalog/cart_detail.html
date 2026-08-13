@@ -1,54 +1,104 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Your Shopping Cart{% endblock %}
+{% block title %}{% trans "Your Shopping Cart" %} | BookShop{% endblock %}
 
 {% block content %}
-<div class="row mt-4">
-    <div class="col-12">
-        <h2 class="mb-4">🛒 Your Shopping Cart</h2>
-        
-        {% if cart|length > 0 %}
-            <div class="table-responsive shadow-sm rounded">
+<div class="mb-4">
+    <h2 class="fw-bold d-flex align-items-center gap-2">
+        <span>🛒</span> {% trans "Your Shopping Cart" %}
+    </h2>
+    <p class="text-muted">{% trans "Review your selected items before proceeding to checkout" %}</p>
+</div>
+
+{% if cart|length > 0 %}
+<div class="row g-4">
+    <!-- Cart Items List (Left Column) -->
+    <div class="col-lg-8">
+        <div class="card-modern p-0 mb-4 overflow-hidden">
+            <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
-                    <thead class="table-dark">
+                    <thead class="table-light">
                         <tr>
-                            <th>Book</th>
-                            <th>Quantity</th>
-                            <th>Unit Price</th>
-                            <th>Total Price</th>
+                            <th scope="col" class="ps-4">{% trans "Book" %}</th>
+                            <th scope="col" class="text-center">{% trans "Quantity" %}</th>
+                            <th scope="col" class="text-end">{% trans "Unit Price" %}</th>
+                            <th scope="col" class="text-end pe-4">{% trans "Total" %}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for item in cart %}
-                            <tr>
-                                <td><strong>{{ item.book.title }}</strong><br><small class="text-muted">{{ item.book.author }}</small></td>
-                                <td>{{ item.quantity }}</td>
-                                <td>${{ item.price }}</td>
-                                <td><strong>${{ item.total_price }}</strong></td>
-                            </tr>
+                        <tr>
+                            <td class="ps-4 py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-3 bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 48px; height: 56px; font-size: 1.5rem;">
+                                        📖
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-dark">{{ item.book.title }}</h6>
+                                        <small class="text-muted">{% trans "by" %} {{ item.book.author }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-light text-dark border px-3 py-2 fs-6 rounded-pill fw-semibold">
+                                    {{ item.quantity }}
+                                </span>
+                            </td>
+                            <td class="text-end font-monospace">${{ item.price }}</td>
+                            <td class="text-end pe-4 fw-bold text-primary font-monospace fs-6">${{ item.total_price }}</td>
+                        </tr>
                         {% endfor %}
                     </tbody>
-                    <tfoot class="table-light">
-                        <tr>
-                            <td colspan="3" class="text-end"><strong>Total Cart Value:</strong></td>
-                            <td><h5 class="text-success mb-0">${{ cart.get_total_price }}</h5></td>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
+        </div>
+
+        <a href="{% url 'catalog:book_list' %}" class="btn btn-outline-primary d-inline-flex align-items-center gap-2">
+            &larr; {% trans "Continue Shopping" %}
+        </a>
+    </div>
+
+    <!-- Order Summary Card (Right Column) -->
+    <div class="col-lg-4">
+        <div class="card-modern p-4 sticky-top" style="top: 100px;">
+            <h5 class="fw-bold mb-3 pb-2 border-bottom">{% trans "Order Summary" %}</h5>
             
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{% url 'catalog:book_list' %}" class="btn btn-outline-secondary">← Continue Shopping</a>
-                <a href="{% url 'catalog:checkout' %}" class="btn btn-primary btn-lg">Proceed to Checkout →</a>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">{% trans "Total Items" %}</span>
+                <span class="fw-bold">{{ cart|length }}</span>
             </div>
-        {% else %}
-            <div class="alert alert-info text-center shadow-sm">
-                <h4 class="alert-heading">Your cart is empty!</h4>
-                <p>Looks like you haven't added any books yet.</p>
-                <hr>
-                <a href="{% url 'catalog:book_list' %}" class="btn btn-primary">Browse Books</a>
+
+            <div class="d-flex justify-content-between align-items-center mb-4 pt-2 border-top">
+                <span class="fw-bold fs-5">{% trans "Total Cart Value" %}</span>
+                <span class="price-tag fs-3 text-success">${{ cart.get_total_price }}</span>
             </div>
-        {% endif %}
+
+            <div class="d-grid gap-2 mb-3">
+                <a href="{% url 'catalog:checkout' %}" class="btn btn-lg btn-success fw-bold d-flex align-items-center justify-content-center gap-2 py-3 shadow-sm">
+                    <span>{% trans "Proceed to Checkout" %}</span> &rarr;
+                </a>
+            </div>
+
+            <div class="bg-light p-3 rounded-3 text-center text-muted small">
+                <span>🔒 {% trans "256-Bit SSL Encrypted & Secure Checkout" %}</span>
+            </div>
+        </div>
     </div>
 </div>
+{% else %}
+<!-- Empty Cart State -->
+<div class="row justify-content-center my-5">
+    <div class="col-md-6 text-center">
+        <div class="card-modern p-5 text-center">
+            <div class="display-1 mb-3">🛒</div>
+            <h3 class="fw-bold mb-2">{% trans "Your cart is empty" %}</h3>
+            <p class="text-muted mb-4">{% trans "Looks like you haven't added any books to your cart yet." %}</p>
+            <a href="{% url 'catalog:book_list' %}" class="btn btn-primary btn-lg px-4">
+                {% trans "Browse Books Catalog" %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}

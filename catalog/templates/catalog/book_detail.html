@@ -1,27 +1,92 @@
 {% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ book.title }} | BookShop{% endblock %}
 
 {% block content %}
-<div class="card shadow-sm mt-4">
-    <div class="card-header bg-dark text-white">
-        <h3>{{ book.title }}</h3>
-    </div>
-    <div class="card-body">
-        <p><strong>Author:</strong> {{ book.author }}</p>
-        <p><strong>Category:</strong> {{ book.category.name }}</p>
-        <p><strong>Price:</strong> ${{ book.price }}</p>
-        <p><strong>Stock:</strong> {{ book.stock }}</p>
-        <hr>
-        <p>{{ book.description }}</p>
-        
-        <div class="mt-4">
-            {% if perms.catalog.change_book %}
-            <a href="{% url 'catalog:book_update' book.pk %}" class="btn btn-warning">Edit</a>
+<!-- Navigation Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catalog:book_list' %}" class="text-decoration-none">{% trans "Catalog" %}</a></li>
+        {% if book.category %}
+            <li class="breadcrumb-item"><span class="text-muted">{{ book.category.name }}</span></li>
+        {% endif %}
+        <li class="breadcrumb-item active" aria-current="page">{{ book.title }}</li>
+    </ol>
+</nav>
+
+<div class="card-modern p-4 p-lg-5 mb-5">
+    <div class="row g-4 g-lg-5 align-items-center">
+        <!-- Left Column: Large Cover Visual -->
+        <div class="col-lg-5">
+            <div class="book-cover-box rounded-4 p-5 shadow-md" style="min-height: 380px;">
+                <div class="book-cover-icon display-1">📘</div>
+                <h3 class="book-cover-title mt-3 fs-3">{{ book.title }}</h3>
+                <p class="text-white-50 mt-2">{% trans "by" %} {{ book.author }}</p>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center mt-3 px-2">
+                {% if book.stock > 0 %}
+                    <span class="badge-stock">{% trans "In Stock" %} ({{ book.stock }} {% trans "copies left" %})</span>
+                {% else %}
+                    <span class="badge-stock-out">{% trans "Currently Out of Stock" %}</span>
+                {% endif %}
+                <span class="text-muted small">ID: #{{ book.id }}</span>
+            </div>
+        </div>
+
+        <!-- Right Column: Details & Actions -->
+        <div class="col-lg-7">
+            <div class="d-flex align-items-center gap-2 mb-2">
+                {% if book.category %}
+                    <span class="badge-category">{{ book.category.name }}</span>
+                {% endif %}
+            </div>
+
+            <h1 class="display-6 fw-bold mb-2">{{ book.title }}</h1>
+            <p class="fs-5 text-muted mb-4">{% trans "Author:" %} <strong class="text-dark">{{ book.author }}</strong></p>
+
+            <div class="p-3 bg-light rounded-3 d-inline-flex align-items-baseline gap-3 mb-4">
+                <span class="text-muted">{% trans "Price:" %}</span>
+                <span class="price-tag fs-2 text-primary">${{ book.price }}</span>
+            </div>
+
+            <div class="mb-4">
+                <h5 class="fw-bold mb-2">{% trans "Description" %}</h5>
+                <p class="text-secondary leading-relaxed fs-6">{{ book.description }}</p>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Primary Action Buttons -->
+            <div class="d-flex flex-wrap gap-3 align-items-center">
+                {% if book.stock > 0 %}
+                <a href="{% url 'catalog:cart_add' book.id %}" class="btn btn-lg btn-success d-inline-flex align-items-center gap-2 px-4 shadow-sm">
+                    <span>🛒</span> {% trans "Add to Shopping Cart" %}
+                </a>
+                {% endif %}
+
+                <a href="{% url 'catalog:book_list' %}" class="btn btn-lg btn-outline-primary px-4">
+                    &larr; {% trans "Back to Catalog" %}
+                </a>
+            </div>
+
+            <!-- Admin Permissions Menu -->
+            {% if perms.catalog.change_book or perms.catalog.delete_book %}
+            <div class="mt-4 pt-3 border-top d-flex gap-2 align-items-center">
+                <span class="text-muted small me-2">{% trans "Admin Actions:" %}</span>
+                {% if perms.catalog.change_book %}
+                <a href="{% url 'catalog:book_update' book.pk %}" class="btn btn-sm btn-outline-secondary">
+                    ✏️ {% trans "Edit Book" %}
+                </a>
+                {% endif %}
+                {% if perms.catalog.delete_book %}
+                <a href="{% url 'catalog:book_delete' book.pk %}" class="btn btn-sm btn-outline-danger">
+                    🗑️ {% trans "Delete" %}
+                </a>
+                {% endif %}
+            </div>
             {% endif %}
-            {% if perms.catalog.delete_book %}
-            <a href="{% url 'catalog:book_delete' book.pk %}" class="btn btn-danger">Delete</a>
-            {% endif %}
-            <a href="{% url 'catalog:book_list' %}" class="btn btn-secondary">Back to List</a>
-            <a href="{% url 'catalog:cart_add' book.id %}" class="btn btn-success btn-sm">Add to Cart</a>
         </div>
     </div>
 </div>

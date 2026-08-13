@@ -1,15 +1,24 @@
 {% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Confirm Delete" %} | {{ book.title }}{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center mt-4">
-    <div class="col-md-6">
-        <div class="alert alert-danger text-center shadow-sm">
-            <h4>Are you sure?</h4>
-            <p>Do you really want to delete "<strong>{{ book.title }}</strong>"? This action cannot be undone.</p>
-            <form method="post">
+<div class="row justify-content-center my-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card-modern p-4 text-center border-danger border-opacity-50">
+            <div class="display-1 text-danger mb-3">⚠️</div>
+            <h3 class="fw-bold text-danger mb-2">{% trans "Delete Confirmation" %}</h3>
+            <p class="text-secondary mb-4">{% blocktrans with title=book.title %}Are you sure you want to permanently delete "<strong>{{ title }}</strong>"? This action cannot be undone.{% endblocktrans %}</p>
+            
+            <form method="post" class="d-flex justify-content-center gap-3">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Yes, Delete</button>
-                <a href="{% url 'catalog:book_detail' book.pk %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-danger px-4 fw-bold">
+                    {% trans "Yes, Delete Book" %}
+                </button>
+                <a href="{% url 'catalog:book_detail' book.pk %}" class="btn btn-outline-secondary px-4">
+                    {% trans "Cancel" %}
+                </a>
             </form>
         </div>
     </div>

@@ -1,97 +1,356 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# Ukrainian translations for BookShop.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: BookShop 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-09 21:20+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2026-08-13 20:25+0000\n"
+"PO-Revision-Date: 2026-08-13 20:25+0000\n"
+"Last-Translator: Antigravity AI\n"
+"Language-Team: Ukrainian\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
-"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
-"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
-"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
-#: catalog/models.py:6
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+
+# Models
 msgid "Name"
 msgstr "Назва"
 
-#: catalog/models.py:7
 msgid "URL Slug"
 msgstr "URL слаг"
 
-#: catalog/models.py:13 catalog/models.py:18
 msgid "Category"
 msgstr "Категорія"
 
-#: catalog/models.py:14
 msgid "Categories"
 msgstr "Категорії"
 
-#: catalog/models.py:19
 msgid "Title"
 msgstr "Назва"
 
-#: catalog/models.py:20
 msgid "Author"
 msgstr "Автор"
 
-#: catalog/models.py:21 catalog/models.py:51
 msgid "Price"
 msgstr "Ціна"
 
-#: catalog/models.py:22
 msgid "Description"
 msgstr "Опис"
 
-#: catalog/models.py:23
 msgid "Stock"
 msgstr "Кількість"
 
-#: catalog/models.py:29
 msgid "Book"
 msgstr "Книга"
 
-#: catalog/models.py:30
 msgid "Books"
 msgstr "Книги"
 
-#: catalog/models.py:35
 msgid "Created At"
 msgstr "Створено"
 
-#: catalog/models.py:36
 msgid "Is Paid"
 msgstr "Оплачено"
 
-#: catalog/models.py:37
 msgid "Stripe Payment ID"
 msgstr "Stripe ID оплати"
 
-#: catalog/models.py:41
 msgid "Order"
 msgstr "Замовлення"
 
-#: catalog/models.py:42
 msgid "Orders"
 msgstr "Замовлення"
 
-#: catalog/models.py:52
 msgid "Quantity"
 msgstr "Кількість"
 
-#: core/settings.py:169
 msgid "English"
 msgstr "Англійська"
 
-#: core/settings.py:170
 msgid "Ukrainian"
 msgstr "Українська"
+
+# Navigation & Header
+msgid "Explore Books"
+msgstr "Досліджувати книги"
+
+msgid "Add Book"
+msgstr "Додати книгу"
+
+msgid "Search by title or author..."
+msgstr "Шукати за назвою або автором..."
+
+msgid "Cart"
+msgstr "Кошик"
+
+msgid "Logout"
+msgstr "Вийти"
+
+msgid "Sign In"
+msgstr "Увійти"
+
+msgid "Get Started"
+msgstr "Розпочати"
+
+# Footer
+msgid "Instant Digital Access"
+msgstr "Миттєвий цифровий доступ"
+
+msgid "Fast processing & immediate delivery"
+msgstr "Швидка обробка та негайна доставка"
+
+msgid "100% Secure Payment"
+msgstr "100% безпечна оплата"
+
+msgid "Stripe 256-bit SSL encrypted checkout"
+msgstr "Захищена оплата Stripe з 256-бітним SSL"
+
+msgid "Curated Selection"
+msgstr "Обирана колекція"
+
+msgid "Hand-picked titles across genres"
+msgstr "Відбрані видання різних жанрів"
+
+msgid "All rights reserved."
+msgstr "Усі права захищені."
+
+msgid "Browse Books"
+msgstr "Переглянути книги"
+
+msgid "View Cart"
+msgstr "Переглянути кошик"
+
+# Book List / Catalog
+msgid "Discover Your Next Favorite Read"
+msgstr "Відкрийте свою наступну улюблену книгу"
+
+msgid "Explore Our Curated World of Knowledge & Stories"
+msgstr "Досліджуйте наш світ знань та історій"
+
+msgid "Find bestsellers, academic classics, modern fiction, and rare gems — delivered straight to your collection."
+msgstr "Знайдіть бестселери, класику, сучасну прозу та рідкісні видання."
+
+msgid "Book Catalog"
+msgstr "Каталог книг"
+
+msgid "Showing search results for:"
+msgstr "Результати пошуку для:"
+
+msgid "Browse through all available titles in our store"
+msgstr "Перегляньте всі доступні книги в нашому магазині"
+
+msgid "Add New Book"
+msgstr "Додати нову книгу"
+
+msgid "In Stock"
+msgstr "В наявності"
+
+msgid "Out of Stock"
+msgstr "Немає в наявності"
+
+msgid "by"
+msgstr "від"
+
+msgid "View Details"
+msgstr "Переглянути деталі"
+
+msgid "Add to Cart"
+msgstr "Додати в кошик"
+
+msgid "No books found"
+msgstr "Книг не знайдено"
+
+msgid "We couldn't find any books matching your criteria."
+msgstr "Ми не змогли знайти книги за вашим запитом."
+
+msgid "Clear Search"
+msgstr "Очистити пошук"
+
+msgid "Previous"
+msgstr "Попередня"
+
+msgid "Next"
+msgstr "Наступна"
+
+msgid "Page %(number)s of %(total)s"
+msgstr "Сторінка %(number)s з %(total)s"
+
+# Book Detail
+msgid "Catalog"
+msgstr "Каталог"
+
+msgid "copies left"
+msgstr "примірників залишилося"
+
+msgid "Currently Out of Stock"
+msgstr "Наразі немає в наявності"
+
+msgid "Author:"
+msgstr "Автор:"
+
+msgid "Price:"
+msgstr "Ціна:"
+
+msgid "Add to Shopping Cart"
+msgstr "Додати в кошик покупок"
+
+msgid "Back to Catalog"
+msgstr "Назад до каталогу"
+
+msgid "Admin Actions:"
+msgstr "Дії адміністратора:"
+
+msgid "Edit Book"
+msgstr "Редагувати книгу"
+
+msgid "Delete"
+msgstr "Видалити"
+
+# Cart Detail
+msgid "Your Shopping Cart"
+msgstr "Ваш кошик покупок"
+
+msgid "Review your selected items before proceeding to checkout"
+msgstr "Перевірте обрані товари перед оформленням замовлення"
+
+msgid "Unit Price"
+msgstr "Ціна за одиницю"
+
+msgid "Total"
+msgstr "Разом"
+
+msgid "Continue Shopping"
+msgstr "Продовжити покупки"
+
+msgid "Order Summary"
+msgstr "Підсумок замовлення"
+
+msgid "Total Items"
+msgstr "Всього товарів"
+
+msgid "Total Cart Value"
+msgstr "Загальна вартість"
+
+msgid "Proceed to Checkout"
+msgstr "Перейти до оплати"
+
+msgid "256-Bit SSL Encrypted & Secure Checkout"
+msgstr "256-бітний SSL захищений розрахунок"
+
+msgid "Your cart is empty"
+msgstr "Ваш кошик порожній"
+
+msgid "Looks like you haven't added any books to your cart yet."
+msgstr "Схоже, ви ще не додали жодної книги до кошика."
+
+msgid "Browse Books Catalog"
+msgstr "Переглянути каталог книг"
+
+# Checkout
+msgid "Secure Checkout"
+msgstr "Безпечна оплата"
+
+msgid "Complete your order with Stripe secure payment processing"
+msgstr "Оформіть замовлення за допомогою безпечної оплати Stripe"
+
+msgid "Order Items Breakdown"
+msgstr "Деталізація замовлення"
+
+msgid "Quantity:"
+msgstr "Кількість:"
+
+msgid "Total Amount Due"
+msgstr "Сума до сплати"
+
+msgid "All taxes included"
+msgstr "Усі податки враховано"
+
+msgid "Pay $%(amount)s with Stripe"
+msgstr "Сплатити $%(amount)s через Stripe"
+
+msgid "256-Bit SSL"
+msgstr "256-бітний SSL"
+
+msgid "Instant Access"
+msgstr "Миттєвий доступ"
+
+msgid "Buyer Protection"
+msgstr "Захист покупця"
+
+# Book Form & Confirm Delete & Success
+msgid "Edit"
+msgstr "Редагувати"
+
+msgid "Edit Book Details"
+msgstr "Редагувати деталі книги"
+
+msgid "Fill in the book details to update the catalog"
+msgstr "Заповніть деталі книги для оновлення каталогу"
+
+msgid "Save Book Details"
+msgstr "Зберегти деталі книги"
+
+msgid "Cancel"
+msgstr "Скасувати"
+
+msgid "Confirm Delete"
+msgstr "Підтвердження видалення"
+
+msgid "Delete Confirmation"
+msgstr "Підтвердження видалення"
+
+msgid "Are you sure you want to permanently delete \"<strong>%(title)s</strong>\"? This action cannot be undone."
+msgstr "Ви впевнені, що хочете видалити \"<strong>%(title)s</strong>\"? Цю дію неможливо скасувати."
+
+msgid "Yes, Delete Book"
+msgstr "Так, видалити книгу"
+
+msgid "Payment Successful!"
+msgstr "Оплату успішно здійснено!"
+
+msgid "Thank you for your purchase."
+msgstr "Дякуємо за покупку."
+
+msgid "Your order has been confirmed. A receipt and order confirmation have been sent to your registered email address."
+msgstr "Ваше замовлення підтверджено. Квитанцію відправлено на вашу електронну пошту."
+
+msgid "Status:"
+msgstr "Статус:"
+
+msgid "Paid & Processing"
+msgstr "Оплачено та обробляється"
+
+msgid "Delivery:"
+msgstr "Доставка:"
+
+msgid "Instant Digital Dispatch"
+msgstr "Миттєве цифрове відправлення"
+
+msgid "Return to Book Catalog"
+msgstr "Повернутися до каталогу книг"
+
+# Auth
+msgid "Welcome Back"
+msgstr "Ласкаво просимо знову"
+
+msgid "Sign in to your BookShop account"
+msgstr "Увійдіть до свого облікового запису BookShop"
+
+msgid "Don't have an account yet?"
+msgstr "Ще не маєте облікового запису?"
+
+msgid "Register here"
+msgstr "Зареєструйтеся тут"
+
+msgid "Create Account"
+msgstr "Створити обліковий запис"
+
+msgid "Join BookShop today to start reading"
+msgstr "Приєднуйтесь до BookShop сьогодні, щоб почати читання"
+
+msgid "Already have an account?"
+msgstr "Вже маєте обліковий запис?"
+
+msgid "Sign in"
+msgstr "Увійти"

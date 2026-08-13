@@ -1,102 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Django Bookstore{% endblock %}</title>
+    <title>{% block title %}BookShop | Modern Bookstore{% endblock %}</title>
+    <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts & Custom CSS -->
     {% load static %}
     {% load i18n %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5">
 </head>
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-
+    <!-- Main Navigation Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark main-navbar sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'catalog:book_list' %}">📚 Bookstore</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <a class="navbar-brand" href="{% url 'catalog:book_list' %}">
+                <span class="fs-4">📖</span>
+                <span>BookShop</span>
+            </a>
+            
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'catalog:book_list' %}">All Books</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn btn-success text-white ms-2" href="{% url 'catalog:book_create' %}">+ Add Book</a>
-                    </li>
-                </ul>
-                <form class="d-flex" method="GET" action="{% url 'catalog:book_list' %}">
-                    <input class="form-control me-2" type="search" name="q" placeholder="Search books..." value="{{ request.GET.q }}">
-                    <button class="btn btn-outline-light" type="submit">Search</button>
-                </form>
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item me-3">
-                        <a href="{% url 'catalog:cart_detail' %}" class="btn btn-warning position-relative">
-                            🛒 Cart
-                            {% if cart|length > 0 %}
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    {{ cart|length }}
-                                </span>
-                            {% endif %}
-                        </a>
-                    </li>
 
+            <div class="collapse navbar-collapse mt-3 mt-lg-0" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'book_list' %}active{% endif %}" href="{% url 'catalog:book_list' %}">{% trans "Explore Books" %}</a>
+                    </li>
+                    {% if user.is_authenticated and user.is_staff %}
+                    <li class="nav-item">
+                        <a class="nav-link text-success-emphasis ms-lg-2" href="{% url 'catalog:book_create' %}">✨ {% trans "Add Book" %}</a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                <!-- Navbar Search Bar -->
+                <form class="nav-search me-lg-3 my-2 my-lg-0" method="GET" action="{% url 'catalog:book_list' %}">
+                    <span class="search-icon">🔍</span>
+                    <input class="form-control" type="search" name="q" placeholder="{% trans 'Search by title or author...' %}" value="{{ request.GET.q|default:'' }}">
+                </form>
+
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <!-- Shopping Cart Button -->
+                    <a href="{% url 'catalog:cart_detail' %}" class="btn-cart text-decoration-none">
+                        <span>🛒 {% trans "Cart" %}</span>
+                        {% if cart|length > 0 %}
+                            <span class="badge rounded-pill bg-white text-dark ms-1">
+                                {{ cart|length }}
+                            </span>
+                        {% endif %}
+                    </a>
+
+                    <!-- Language Switcher -->
                     <form action="{% url 'set_language' %}" method="post" class="d-inline">
                         {% csrf_token %}
-                        <input name="next" type="hidden" value="{{ redirect_to }}">
-                        <select name="language" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
+                        <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                        <select name="language" class="lang-select" onchange="this.form.submit()">
                             {% get_current_language as LANGUAGE_CODE %}
                             {% get_available_languages as LANGUAGES %}
                             {% get_language_info_list for LANGUAGES as languages %}
 
                             {% for language in languages %}
                                 <option value="{{ language.code }}" {% if language.code == LANGUAGE_CODE %}selected{% endif %}>
-                                    {{ language.name_local }}
+                                    {{ language.name_local|title }}
                                 </option>
                             {% endfor %}
                         </select>
                     </form>
 
+                    <!-- Authentication Navigation -->
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <span class="nav-link text-warning">Hello, {{ user.username }}!</span>
-                        </li>
-                        <li class="nav-item">
-                            <form method="post" action="{% url 'logout' %}" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-outline-danger btn-sm mt-1 ms-2">Logout</button>
-                            </form>
-                        </li>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-light dropdown-toggle d-flex align-items-center gap-2" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="bg-primary text-white rounded-circle px-2 py-1 fs-6">👤</span>
+                                <span>{{ user.username }}</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="userMenu">
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item text-danger d-flex align-items-center gap-2">
+                                            <span>🚪</span> {% trans "Logout" %}
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-info btn-sm text-white ms-2" href="{% url 'register' %}">Register</a>
-                        </li>
+                        <div class="d-flex align-items-center gap-2">
+                            <a class="btn btn-sm btn-outline-light" href="{% url 'login' %}">{% trans "Sign In" %}</a>
+                            <a class="btn btn-sm btn-primary" href="{% url 'register' %}">{% trans "Get Started" %}</a>
+                        </div>
                     {% endif %}
-                </ul>
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-3">
+    <!-- Alert Notifications Container -->
+    <div class="container mt-4">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow-sm rounded-3 d-flex align-items-center gap-2" role="alert">
+                    <span>💡</span>
+                    <div>{{ message }}</div>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endif %}
     </div>
-    <div class="container">
+
+    <!-- Main Content Container -->
+    <main class="container py-3">
         {% block content %}
         {% endblock %}
-    </div>
+    </main>
 
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <span class="feature-icon">🚀</span>
+                        <div>
+                            <div class="feature-title">{% trans "Instant Digital Access" %}</div>
+                            <p class="feature-desc">{% trans "Fast processing & immediate delivery" %}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <span class="feature-icon">🔒</span>
+                        <div>
+                            <div class="feature-title">{% trans "100% Secure Payment" %}</div>
+                            <p class="feature-desc">{% trans "Stripe 256-bit SSL encrypted checkout" %}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <span class="feature-icon">📚</span>
+                        <div>
+                            <div class="feature-title">{% trans "Curated Selection" %}</div>
+                            <p class="feature-desc">{% trans "Hand-picked titles across genres" %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 border-top border-secondary border-opacity-25 pt-4">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-muted">&copy; {% now "Y" %} BookShop Inc. {% trans "All rights reserved." %}</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="{% url 'catalog:book_list' %}" class="footer-link d-inline-block me-3">{% trans "Browse Books" %}</a>
+                    <a href="{% url 'catalog:cart_detail' %}" class="footer-link d-inline-block">{% trans "View Cart" %}</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

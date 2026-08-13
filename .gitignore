@@ -28,3 +28,6 @@ debug.log
 .coverage
 htmlcov/
 .pytest_cache/
+
+# Static files
+staticfiles/
