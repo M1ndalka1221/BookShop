@@ -1,3 +1,4 @@
+# Generated with AI, reviewed and modified
 import pytest
 from django.urls import reverse
 from catalog.models import Book
@@ -87,4 +88,3 @@ def test_language_switch_to_ukrainian(client, book):
     assert "Досліджувати книги" in content
     assert "Каталог книг" in content
     assert "Кошик" in content
-
