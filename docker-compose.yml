@@ -31,12 +31,42 @@ services:
     build: .
     container_name: bookstore_web
     restart: always
-    command: python manage.py runserver 0.0.0.0:8000
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
     ports:
       - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery:
+    build: .
+    container_name: bookstore_celery
+    restart: always
+    command: celery -A core worker --loglevel=info
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery-beat:
+    build: .
+    container_name: bookstore_celery_beat
+    restart: always
+    command: celery -A core beat --loglevel=info
+    volumes:
+      - .:/app
     env_file:
       - .env
     depends_on:

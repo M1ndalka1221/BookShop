@@ -1,7 +1,14 @@
 import pytest
 import factory
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from catalog.models import Category, Book, Order, OrderItem
+
+@pytest.fixture(autouse=True)
+def clear_cache_autouse():
+    cache.clear()
+    yield
+    cache.clear()
 
 User = get_user_model()
 

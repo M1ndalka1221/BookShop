@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n cache %}
 
 {% block title %}{{ book.title }} | BookShop{% endblock %}
 
@@ -51,10 +51,12 @@
                 <span class="price-tag fs-2 text-primary">${{ book.price }}</span>
             </div>
 
+            {% cache 600 book_detail_fragment book.id %}
             <div class="mb-4">
                 <h5 class="fw-bold mb-2">{% trans "Description" %}</h5>
                 <p class="text-secondary leading-relaxed fs-6">{{ book.description }}</p>
             </div>
+            {% endcache %}
 
             <hr class="my-4">
 

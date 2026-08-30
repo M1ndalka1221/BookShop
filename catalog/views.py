@@ -13,8 +13,12 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 from .models import Book, Order, OrderItem
 from .cart import Cart
+from .tasks import send_email_async
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -48,13 +52,32 @@ class BookListView(ListView):
         return queryset
 
 
+def get_book_detail_cached(book_id: int) -> Book:
+    """
+    Low-level cache retrieval for a Book object by primary key.
+    """
+    cache_key = f"book_detail_{book_id}"
+    book = cache.get(cache_key)
+    if book is None:
+        book = get_object_or_404(Book.objects.select_related("category"), id=book_id)
+        cache.set(cache_key, book, 600)
+    return book
+
+
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class BookDetailView(DetailView):
     """
-    Display details of a single book instance.
+    Display details of a single book instance with view-level and low-level caching.
     """
     model = Book
     template_name = "catalog/book_detail.html"
     context_object_name = "book"
+
+    def get_object(self, queryset=None) -> Book:
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        if pk is not None:
+            return get_book_detail_cached(int(pk))
+        return super().get_object(queryset)
 
 
 class CustomPermissionRequiredMixin(PermissionRequiredMixin):
@@ -205,14 +228,17 @@ def checkout(request: HttpRequest) -> HttpResponse:
                 Book.objects.bulk_update(books_to_update, ['stock'])
                 cart.clear()
 
-            # Email notification sent outside of DB transaction block
+            # Async email notification via Celery task
             try:
                 subject = f'Order nr. {order.id}'
                 message = f'Dear {order.user.username},\n\nYou have successfully placed an order. Your order ID is {order.id}.'
-                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [order.user.email])
+                send_email_async.delay(subject, message, [order.user.email])
             except Exception:
-                # Log or handle email delivery issues without rolling back successful order
-                pass
+                # Fallback to sync send_mail if Celery broker is unavailable
+                try:
+                    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [order.user.email])
+                except Exception:
+                    pass
 
             session_data: dict[str, Any] = {
                 'mode': 'payment',

@@ -19,6 +19,14 @@ from django.utils.translation import gettext_lazy as _
 
 load_dotenv()
 
+import sentry_sdk
+SENTRY_DSN = os.getenv('SENTRY_DSN')
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        traces_sample_rate=1.0,
+    )
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -148,6 +156,25 @@ if not IS_TESTING:
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 SESSION_CACHE_ALIAS = "default"
+
+# Celery Configuration Settings
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0'))
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', os.getenv('REDIS_URL', 'redis://127.0.0.1:6379/0'))
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+CELERY_BEAT_SCHEDULE = {
+    'cleanup-expired-sessions-daily': {
+        'task': 'catalog.tasks.cleanup_sessions',
+        'schedule': 86400.0,
+    },
+    'generate-sales-report-periodic': {
+        'task': 'catalog.tasks.generate_reports',
+        'schedule': 3600.0,
+    },
+}
 
 
 

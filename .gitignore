@@ -30,4 +30,9 @@ htmlcov/
 .pytest_cache/
 
 # Static files
-staticfiles/
+staticfiles/
+
+# Local agents
+.agents/
+.superpowers/
+docs/superpowers/
