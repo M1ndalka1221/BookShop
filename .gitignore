@@ -24,6 +24,9 @@ db.sqlite3
 debug.log
 *.log
 
+# Celery
+celerybeat-schedule*
+
 # Coverage & Pytest cache
 .coverage
 htmlcov/

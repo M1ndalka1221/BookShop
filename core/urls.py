@@ -44,8 +44,11 @@ urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
 ]
 
+from django.conf.urls.static import static
+
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += [
         path('__debug__/', include(debug_toolbar.urls)),
     ]
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

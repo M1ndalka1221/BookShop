@@ -15,8 +15,8 @@ User = get_user_model()
 
 @pytest.mark.django_db
 @patch('stripe.checkout.Session.create')
-@patch('catalog.views.send_mail')
-def test_full_checkout_flow(mock_send_mail, mock_stripe_create, client, user, book):
+@patch('catalog.views.send_email_async.delay')
+def test_full_checkout_flow(mock_send_email, mock_stripe_create, client, user, book):
     mock_stripe_create.return_value.id = 'cs_test_mock_123'
     mock_stripe_create.return_value.url = 'https://checkout.stripe.com/mock'
     client.force_login(user)
@@ -40,7 +40,7 @@ def test_full_checkout_flow(mock_send_mail, mock_stripe_create, client, user, bo
     assert order.items.count() == 1
     book.refresh_from_db()
     assert book.stock == 9
-    mock_send_mail.assert_called_once()
+    mock_send_email.assert_called_once()
 
 
 @pytest.mark.django_db
