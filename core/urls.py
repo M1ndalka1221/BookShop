@@ -28,8 +28,11 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 from users.views import RegisterView
+from core.views import health_check
 
 urlpatterns = [
+    path('health/', health_check, name='health_check'),
+    path('api/health/', health_check, name='api_health_check'),
     path('admin/', admin.site.urls),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
