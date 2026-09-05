@@ -95,7 +95,7 @@ jobs:
           CELERY_RESULT_BACKEND: 'redis://localhost:6379/0'
           STRIPE_PUBLIC_KEY: 'pk_test_mock'
           STRIPE_SECRET_KEY: 'sk_test_mock'
-        run: pytest --cov=. --cov-report=xml
+        run: pytest --cov=. --cov-report=xml --cov-report=term
 
   docker-build-push:
     name: Build & Push Docker Image

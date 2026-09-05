@@ -1,5 +1,12 @@
 # 📚 BookShop - Django E-Commerce Application
 
+[![Django CI/CD](https://github.com/M1ndalka1221/BookShop/actions/workflows/django.yml/badge.svg?branch=main)](https://github.com/M1ndalka1221/BookShop/actions/workflows/django.yml)
+[![Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen.svg)](https://github.com/M1ndalka1221/BookShop)
+[![Python](https://img.shields.io/badge/python-3.11%20%7C%203.14-blue.svg)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/django-5.0-092E20.svg?logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![Docker Image](https://img.shields.io/badge/docker-m1ndalka%2Fbookshop-2496ED?logo=docker&logoColor=white)](https://hub.docker.com/r/m1ndalka/bookshop)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 An e-commerce web application for browsing, searching, managing, and purchasing books, built with **Django 5**, **Stripe Checkout**, **Pytest**, and **Docker**.
 
 ---
@@ -64,7 +71,7 @@ Run the full automated test suite using `pytest` with coverage reporting:
 - **Overall Project Coverage**: **94%**
 - **Model Coverage (`catalog/models.py`, `users/models.py`)**: **100%**
 - **View Coverage (`catalog/views.py`, `catalog/async_views.py`)**: **97% - 100%**
-- **Total Test Count**: **48 passing tests**
+- **Total Test Count**: **85 passing tests**
 
 ---
 
