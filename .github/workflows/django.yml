@@ -113,8 +113,8 @@ jobs:
       - name: Validate & Prepare Docker Hub Credentials
         id: docker_auth
         env:
-          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME || 'M1ndalka' }}
-          DOCKER_TOKEN_RAW: ${{ secrets.DOCKERHUB_TOKEN || secrets.DOCKER_HUB_TOKEN || secrets.DOCKER_PASSWORD || secrets.DOCKERHUB_PASSWORD || secrets.DOCKER_TOKEN }}
+          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME || 'm1ndalka' }}
+          DOCKER_TOKEN_RAW: ${{ secrets.DOCKERHUB_TOKEN || secrets.DOCKER_HUB_TOKEN || secrets.DOCKER_PASSWORD || secrets.DOCKERHUB_PASSWORD || secrets.DOCKER_TOKEN || secrets.M1ndalka || secrets.m1ndalka }}
         run: |
           if [ -z "$DOCKER_TOKEN_RAW" ]; then
             echo "::error::Missing Docker Hub secret! Please add DOCKERHUB_TOKEN in GitHub: Settings -> Secrets and variables -> Actions."
@@ -130,7 +130,7 @@ jobs:
           fi
 
           # Detect if the secret is mistakenly set to the username
-          if [ "$CLEAN_TOKEN" = "$DOCKER_USER" ] || [ "$CLEAN_TOKEN" = "Mindalka" ] || [ "$CLEAN_TOKEN" = "M1ndalka" ]; then
+          if [ "$CLEAN_TOKEN" = "$DOCKER_USER" ] || [ "$CLEAN_TOKEN" = "Mindalka" ] || [ "$CLEAN_TOKEN" = "M1ndalka" ] || [ "$CLEAN_TOKEN" = "m1ndalka" ]; then
             echo "::error::DOCKERHUB_TOKEN cannot be your username ('$CLEAN_TOKEN')! A Personal Access Token (PAT) must be generated at https://hub.docker.com/settings/security -> 'New Access Token' (Permissions: Read & Write). Copy the token value (starts with dckr_pat_...) and save it as DOCKERHUB_TOKEN in GitHub Repository Secrets."
             exit 1
           fi
@@ -142,7 +142,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME || 'M1ndalka' }}
+          username: ${{ secrets.DOCKERHUB_USERNAME || 'm1ndalka' }}
           password: ${{ steps.docker_auth.outputs.token }}
 
       - name: Build and Push Docker Image
