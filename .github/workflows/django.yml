@@ -113,18 +113,40 @@ jobs:
       - name: Validate & Prepare Docker Hub Credentials
         id: docker_auth
         env:
-          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME || 'm1ndalka' }}
-          DOCKER_TOKEN_RAW: ${{ secrets.DOCKERHUB_TOKEN || secrets.DOCKER_HUB_TOKEN || secrets.DOCKER_PASSWORD || secrets.DOCKERHUB_PASSWORD || secrets.DOCKER_TOKEN || secrets.M1ndalka || secrets.m1ndalka }}
+          CANDIDATE_1: ${{ secrets.DOCKERHUB_TOKEN }}
+          CANDIDATE_2: ${{ secrets.M1ndalka }}
+          CANDIDATE_3: ${{ secrets.m1ndalka }}
+          CANDIDATE_4: ${{ secrets.DOCKER_HUB_TOKEN }}
+          CANDIDATE_5: ${{ secrets.DOCKER_PASSWORD }}
+          OVERRIDE_USER: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          if [ -z "$DOCKER_TOKEN_RAW" ]; then
+          DOCKER_USER="m1ndalka"
+          if [ -n "$OVERRIDE_USER" ] && [ "$OVERRIDE_USER" != "Mindalka" ] && [ "$OVERRIDE_USER" != "M1ndalka" ]; then
+            DOCKER_USER=$(echo "$OVERRIDE_USER" | tr '[:upper:]' '[:lower:]')
+          fi
+
+          RAW_TOKEN=""
+          # Check all candidate secrets; prioritize one that matches dckr_pat_ pattern
+          for c in "$CANDIDATE_1" "$CANDIDATE_2" "$CANDIDATE_3" "$CANDIDATE_4" "$CANDIDATE_5"; do
+            if [ -n "$c" ]; then
+              if [[ "$c" =~ (dckr_pat_[a-zA-Z0-9_-]+) ]]; then
+                RAW_TOKEN="${BASH_REMATCH[1]}"
+                break
+              fi
+              if [ -z "$RAW_TOKEN" ]; then
+                RAW_TOKEN="$c"
+              fi
+            fi
+          done
+
+          if [ -z "$RAW_TOKEN" ]; then
             echo "::error::Missing Docker Hub secret! Please add DOCKERHUB_TOKEN in GitHub: Settings -> Secrets and variables -> Actions."
             exit 1
           fi
 
           # Strip carriage returns, leading/trailing whitespace, and quotes
-          CLEAN_TOKEN=$(echo "$DOCKER_TOKEN_RAW" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' -e "s/^'//" -e "s/'$//")
+          CLEAN_TOKEN=$(echo "$RAW_TOKEN" | tr -d '\r\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's/^"//' -e 's/"$//' -e "s/^'//" -e "s/'$//")
 
-          # Auto-extract PAT if the user pasted the entire 'docker login' command or 'Bearer' prefix
           if [[ "$CLEAN_TOKEN" =~ (dckr_pat_[a-zA-Z0-9_-]+) ]]; then
             CLEAN_TOKEN="${BASH_REMATCH[1]}"
           fi
@@ -135,14 +157,19 @@ jobs:
             exit 1
           fi
 
+          echo "Docker Hub Username: $DOCKER_USER"
+          echo "Token Length: ${#CLEAN_TOKEN} characters"
+          echo "Token Preview: ${CLEAN_TOKEN:0:9}...${CLEAN_TOKEN: -4}"
+
           # Mask the cleaned token so it is never exposed in logs
           echo "::add-mask::$CLEAN_TOKEN"
           echo "token=$CLEAN_TOKEN" >> "$GITHUB_OUTPUT"
+          echo "username=$DOCKER_USER" >> "$GITHUB_OUTPUT"
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME || 'm1ndalka' }}
+          username: ${{ steps.docker_auth.outputs.username }}
           password: ${{ steps.docker_auth.outputs.token }}
 
       - name: Build and Push Docker Image
