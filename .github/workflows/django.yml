@@ -120,7 +120,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME || 'Mindalka' }}
+          username: ${{ secrets.DOCKERHUB_USERNAME || 'M1ndalka' }}
           password: ${{ secrets.DOCKERHUB_TOKEN || secrets.DOCKER_HUB_TOKEN || secrets.DOCKER_PASSWORD || secrets.DOCKERHUB_PASSWORD || secrets.DOCKER_TOKEN }}
 
       - name: Build and Push Docker Image
@@ -129,7 +129,7 @@ jobs:
           context: .
           push: true
           tags: |
-            mindalka/bookshop:latest
-            mindalka/bookshop:${{ github.sha }}
+            m1ndalka/bookshop:latest
+            m1ndalka/bookshop:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
