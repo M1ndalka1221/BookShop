@@ -110,11 +110,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Verify Docker Hub Credentials
+        run: |
+          if [ -z "${{ secrets.DOCKERHUB_TOKEN || secrets.DOCKER_HUB_TOKEN || secrets.DOCKER_PASSWORD || secrets.DOCKERHUB_PASSWORD || secrets.DOCKER_TOKEN }}" ]; then
+            echo "::error::Missing Docker Hub secret! Please add DOCKERHUB_TOKEN in GitHub: Settings -> Secrets and variables -> Actions -> New repository secret."
+            exit 1
+          fi
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: Mindalka
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ secrets.DOCKERHUB_USERNAME || 'Mindalka' }}
+          password: ${{ secrets.DOCKERHUB_TOKEN || secrets.DOCKER_HUB_TOKEN || secrets.DOCKER_PASSWORD || secrets.DOCKERHUB_PASSWORD || secrets.DOCKER_TOKEN }}
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
