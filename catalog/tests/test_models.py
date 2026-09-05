@@ -1,7 +1,7 @@
 # Generated with AI, reviewed and modified
 import pytest
 from decimal import Decimal
-from catalog.models import Category, Book, Order, OrderItem
+from catalog.models import Category, Book, Order
 from .conftest import CategoryFactory, BookFactory, OrderFactory, OrderItemFactory
 
 
@@ -50,7 +50,9 @@ def test_category_verbose_name_plural():
 def test_book_default_stock():
     """Test default stock value when creating a Book."""
     category = CategoryFactory()
-    book = Book.objects.create(category=category, title="Test", author="Author", price=Decimal("15.00"))
+    book = Book.objects.create(
+        category=category, title="Test", author="Author", price=Decimal("15.00")
+    )
     assert book.stock == 0
 
 
@@ -65,10 +67,10 @@ def test_order_default_unpaid(user):
 @pytest.mark.django_db
 def test_book_ordering():
     """Test ordering meta setting for Book model."""
-    assert Book._meta.ordering == ['id']
+    assert Book._meta.ordering == ["id"]
 
 
 @pytest.mark.django_db
 def test_order_ordering():
     """Test ordering meta setting for Order model."""
-    assert Order._meta.ordering == ['-created_at']
+    assert Order._meta.ordering == ["-created_at"]

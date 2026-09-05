@@ -1,8 +1,7 @@
 import pytest
 from unittest.mock import patch
 from django.core.cache import cache
-from django.urls import reverse
-from catalog.models import Book, Category
+from catalog.models import Book
 from catalog.views import get_book_detail_cached
 from catalog.tasks import send_email_async, generate_reports, cleanup_sessions
 
@@ -23,7 +22,7 @@ class TestRedisCachingAndSignals:
             author="Cache Author",
             price=19.99,
             description="Caching description",
-            stock=10
+            stock=10,
         )
         cache_key = f"book_detail_{book.id}"
         assert cache.get(cache_key) is None
@@ -39,7 +38,7 @@ class TestRedisCachingAndSignals:
             author="Author",
             price=29.99,
             description="Desc",
-            stock=5
+            stock=5,
         )
         cache_key = f"book_detail_{book.id}"
         # Populate cache
@@ -60,7 +59,7 @@ class TestRedisCachingAndSignals:
             author="Author",
             price=15.00,
             description="Desc",
-            stock=2
+            stock=2,
         )
         cache_key = f"book_detail_{book.id}"
         get_book_detail_cached(book.id)
@@ -83,7 +82,7 @@ class TestCeleryTasks:
             message="Test Body",
             from_email="noreply@bookstore.com",
             recipient_list=["test@example.com"],
-            fail_silently=False
+            fail_silently=False,
         )
 
     def test_generate_reports(self, book):

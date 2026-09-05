@@ -1,7 +1,7 @@
 import time
 import logging
 
-logger = logging.getLogger('performance')
+logger = logging.getLogger("performance")
 
 
 class RequestTimingMiddleware:

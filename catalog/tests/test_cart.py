@@ -7,7 +7,7 @@ from .conftest import BookFactory
 
 @pytest.fixture
 def mock_request():
-    request = RequestFactory().get('/')
+    request = RequestFactory().get("/")
     middleware = SessionMiddleware(lambda req: None)
     middleware.process_request(request)
     request.session.save()
@@ -51,5 +51,5 @@ def test_cart_iter(mock_request):
     cart.add(book=book, quantity=1)
 
     for item in cart:
-        assert item['book'] == book
-        assert item['total_price'] == 10.00
+        assert item["book"] == book
+        assert item["total_price"] == 10.00

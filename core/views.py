@@ -15,28 +15,28 @@ def health_check(request: HttpRequest) -> JsonResponse:
     # 1. Database connectivity check
     try:
         connection.ensure_connection()
-        components['database'] = 'ok'
+        components["database"] = "ok"
     except Exception as e:
-        components['database'] = f'error: {str(e)}'
+        components["database"] = f"error: {str(e)}"
         is_healthy = False
 
     # 2. Redis / Cache connectivity check
     try:
-        cache.set('_health_check', '1', timeout=5)
-        val = cache.get('_health_check')
+        cache.set("_health_check", "1", timeout=5)
+        val = cache.get("_health_check")
         if val is not None:
-            components['cache'] = 'ok'
+            components["cache"] = "ok"
         else:
-            components['cache'] = 'error: cache read failed'
+            components["cache"] = "error: cache read failed"
             is_healthy = False
     except Exception as e:
-        components['cache'] = f'error: {str(e)}'
+        components["cache"] = f"error: {str(e)}"
         is_healthy = False
 
     status_code = 200 if is_healthy else 503
     payload: dict[str, Any] = {
-        'status': 'healthy' if is_healthy else 'unhealthy',
-        'components': components,
+        "status": "healthy" if is_healthy else "unhealthy",
+        "components": components,
     }
 
     return JsonResponse(payload, status=status_code)
