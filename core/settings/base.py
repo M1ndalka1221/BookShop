@@ -283,3 +283,11 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
+
+# Warehouse Microservice (Project B) Integration
+WAREHOUSE_SERVICE_URL = os.getenv("WAREHOUSE_SERVICE_URL", "http://127.0.0.1:8001")
+WAREHOUSE_SERVICE_USER = os.getenv("WAREHOUSE_SERVICE_USER", "bookshop_service")
+WAREHOUSE_SERVICE_PASSWORD = os.getenv(
+    "WAREHOUSE_SERVICE_PASSWORD", "warehouse_secret_pass_2026"
+)
+
