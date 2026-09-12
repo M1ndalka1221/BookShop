@@ -118,5 +118,7 @@ class ReleaseStockRequestSerializer(serializers.Serializer):
 class RestockRequestSerializer(serializers.Serializer):
     book_id = serializers.IntegerField(min_value=1)
     quantity = serializers.IntegerField(min_value=1)
-    reference_id = serializers.CharField(max_length=100, required=False, allow_blank=True, default="")
+    reference_id = serializers.CharField(
+        max_length=100, required=False, allow_blank=True, default=""
+    )
     notes = serializers.CharField(required=False, allow_blank=True, default="")

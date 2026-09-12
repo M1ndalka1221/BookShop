@@ -26,7 +26,15 @@ class WarehouseItemAdmin(admin.ModelAdmin):
 
 @admin.register(StockReservation)
 class StockReservationAdmin(admin.ModelAdmin):
-    list_display = ("id", "item", "order_id", "quantity", "status", "created_at", "expires_at")
+    list_display = (
+        "id",
+        "item",
+        "order_id",
+        "quantity",
+        "status",
+        "created_at",
+        "expires_at",
+    )
     list_filter = ("status", "created_at")
     search_fields = ("order_id", "item__title", "item__sku")
 

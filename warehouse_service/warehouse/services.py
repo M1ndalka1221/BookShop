@@ -49,25 +49,33 @@ def invalidate_item_cache(book_id: int):
     cache.delete(cache_key)
 
 
-def reserve_stock(order_id: int, items: list, expires_in_minutes: int = 15, performed_by=None):
+def reserve_stock(
+    order_id: int, items: list, expires_in_minutes: int = 15, performed_by=None
+):
     """
     Atomically reserves stock for a collection of items during checkout.
     Uses select_for_update() to prevent race conditions.
     """
-    logger.info("Initiating stock reservation for order #%s with %s items", order_id, len(items))
+    logger.info(
+        "Initiating stock reservation for order #%s with %s items", order_id, len(items)
+    )
 
     with transaction.atomic():
         book_ids = [it["book_id"] for it in items]
         warehouse_items = {
             wh_item.book_id: wh_item
-            for wh_item in WarehouseItem.objects.select_for_update().filter(book_id__in=book_ids)
+            for wh_item in WarehouseItem.objects.select_for_update().filter(
+                book_id__in=book_ids
+            )
         }
 
         # Validate existence
         for it in items:
             b_id = it["book_id"]
             if b_id not in warehouse_items:
-                logger.warning("Reservation failed: book ID %s not found in warehouse", b_id)
+                logger.warning(
+                    "Reservation failed: book ID %s not found in warehouse", b_id
+                )
                 raise ItemNotFoundException(b_id)
 
         # Validate stock levels
@@ -161,7 +169,9 @@ def confirm_sale(order_id: int = None, reservation_ids: list = None, performed_b
             )
             invalidate_item_cache(item.book_id)
 
-        logger.info("Confirmed %s reservations for order #%s", len(reservations), order_id)
+        logger.info(
+            "Confirmed %s reservations for order #%s", len(reservations), order_id
+        )
         return len(reservations)
 
 
@@ -206,11 +216,22 @@ def release_stock(
             )
             invalidate_item_cache(item.book_id)
 
-        logger.info("Released %s reservations for order #%s (%s)", len(reservations), order_id, reason)
+        logger.info(
+            "Released %s reservations for order #%s (%s)",
+            len(reservations),
+            order_id,
+            reason,
+        )
         return len(reservations)
 
 
-def restock_item(book_id: int, quantity: int, reference_id: str = "", notes: str = "", performed_by=None):
+def restock_item(
+    book_id: int,
+    quantity: int,
+    reference_id: str = "",
+    notes: str = "",
+    performed_by=None,
+):
     """
     Adds available stock to an item and creates an audit transaction.
     """
@@ -233,5 +254,10 @@ def restock_item(book_id: int, quantity: int, reference_id: str = "", notes: str
             notes=notes,
         )
         invalidate_item_cache(book_id)
-        logger.info("Restocked %s units for book ID %s. New available: %s", quantity, book_id, item.available_stock)
+        logger.info(
+            "Restocked %s units for book ID %s. New available: %s",
+            quantity,
+            book_id,
+            item.available_stock,
+        )
         return item

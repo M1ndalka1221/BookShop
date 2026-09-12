@@ -34,9 +34,9 @@ class CustomUser(AbstractUser):
 
     @property
     def is_operator(self):
-        return (
-            self.is_superuser
-            or self.role in (self.Role.WAREHOUSE_OPERATOR, self.Role.WAREHOUSE_MANAGER)
+        return self.is_superuser or self.role in (
+            self.Role.WAREHOUSE_OPERATOR,
+            self.Role.WAREHOUSE_MANAGER,
         )
 
     def __str__(self):

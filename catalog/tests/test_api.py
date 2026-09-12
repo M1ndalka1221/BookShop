@@ -166,7 +166,7 @@ def test_book_list_pagination(api_client, sample_category):
     for i in range(25):
         Book.objects.create(
             category=sample_category,
-            title=f"Book {i+1}",
+            title=f"Book {i + 1}",
             author="Author Name",
             price=Decimal("10.00"),
             description="Test book",

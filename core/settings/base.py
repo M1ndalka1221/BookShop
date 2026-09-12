@@ -290,4 +290,3 @@ WAREHOUSE_SERVICE_USER = os.getenv("WAREHOUSE_SERVICE_USER", "bookshop_service")
 WAREHOUSE_SERVICE_PASSWORD = os.getenv(
     "WAREHOUSE_SERVICE_PASSWORD", "warehouse_secret_pass_2026"
 )
-

@@ -49,10 +49,15 @@ class WarehouseClient:
         max_retries: int = 2,
     ):
         self.base_url = (
-            base_url or getattr(settings, "WAREHOUSE_SERVICE_URL", "http://127.0.0.1:8001")
+            base_url
+            or getattr(settings, "WAREHOUSE_SERVICE_URL", "http://127.0.0.1:8001")
         ).rstrip("/")
-        self.username = username or getattr(settings, "WAREHOUSE_SERVICE_USER", "bookshop_service")
-        self.password = password or getattr(settings, "WAREHOUSE_SERVICE_PASSWORD", "warehouse_secret_pass_2026")
+        self.username = username or getattr(
+            settings, "WAREHOUSE_SERVICE_USER", "bookshop_service"
+        )
+        self.password = password or getattr(
+            settings, "WAREHOUSE_SERVICE_PASSWORD", "warehouse_secret_pass_2026"
+        )
         self.timeout = timeout
         self.max_retries = max_retries
 
@@ -72,7 +77,9 @@ class WarehouseClient:
             res = requests.post(token_url, json=payload, timeout=self.timeout)
         except requests.RequestException as e:
             logger.error("Failed to connect to Warehouse token endpoint: %s", str(e))
-            raise WarehouseConnectionError(f"Could not connect to Warehouse at {token_url}: {e}") from e
+            raise WarehouseConnectionError(
+                f"Could not connect to Warehouse at {token_url}: {e}"
+            ) from e
 
         if res.status_code != 200:
             logger.error("Warehouse auth failed (%s): %s", res.status_code, res.text)
@@ -88,7 +95,9 @@ class WarehouseClient:
         cache.set(self.CACHE_TOKEN_KEY, access_token, timeout=3000)
         return access_token
 
-    def _request(self, method: str, endpoint: str, json_data: dict = None, params: dict = None) -> dict:
+    def _request(
+        self, method: str, endpoint: str, json_data: dict = None, params: dict = None
+    ) -> dict:
         """
         Executes authenticated HTTP request with JWT token, retry on 401, and exponential backoff.
         """
@@ -135,7 +144,9 @@ class WarehouseClient:
 
                 if res.status_code >= 400:
                     error_data = res.json() if res.content else {}
-                    logger.error("Warehouse API error (%s): %s", res.status_code, error_data)
+                    logger.error(
+                        "Warehouse API error (%s): %s", res.status_code, error_data
+                    )
                     raise WarehouseAPIError(
                         f"Warehouse request failed with status {res.status_code}",
                         status_code=res.status_code,
@@ -156,8 +167,14 @@ class WarehouseClient:
                     )
                     time.sleep(backoff)
                 else:
-                    logger.error("Warehouse connection failed permanently after %s retries: %s", self.max_retries, str(e))
-                    raise WarehouseConnectionError(f"Connection to Warehouse failed: {e}") from e
+                    logger.error(
+                        "Warehouse connection failed permanently after %s retries: %s",
+                        self.max_retries,
+                        str(e),
+                    )
+                    raise WarehouseConnectionError(
+                        f"Connection to Warehouse failed: {e}"
+                    ) from e
 
     def check_stock(self, book_id: int) -> dict:
         """
@@ -165,7 +182,9 @@ class WarehouseClient:
         """
         return self._request("GET", f"/api/inventory/items/{book_id}/stock/")
 
-    def reserve_stock(self, order_id: int, items: list, expires_in_minutes: int = 15) -> dict:
+    def reserve_stock(
+        self, order_id: int, items: list, expires_in_minutes: int = 15
+    ) -> dict:
         """
         Reserves warehouse stock for an order during checkout.
         """

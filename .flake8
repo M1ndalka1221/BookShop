@@ -15,4 +15,6 @@ exclude =
 ignore = E203, W503, E704
 per-file-ignores =
     core/settings/*: F401,F403,F405,E402
+    warehouse_service/config/settings/*: F401,F403,F405,E402
     core/__init__.py: F401
+    warehouse_service/config/__init__.py: F401
