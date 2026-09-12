@@ -25,8 +25,12 @@ SECRET_KEY = os.getenv(
     "SECRET_KEY", "django-insecure-warehouse-dev-key-change-in-production-12345"
 )
 
-DEBUG = False
-ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1,warehouse_web,web").split(",") if host.strip()]
+default_hosts = "localhost,127.0.0.1,warehouse_web,web"
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("ALLOWED_HOSTS", default_hosts).split(",")
+    if host.strip()
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",

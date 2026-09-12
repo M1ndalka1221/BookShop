@@ -1,4 +1,3 @@
-import pytest
 from warehouse.serializers import (
     ReserveStockRequestSerializer,
     ConfirmSaleRequestSerializer,

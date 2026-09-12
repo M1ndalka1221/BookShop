@@ -27,7 +27,7 @@ def test_stock_cache_lifecycle():
         reserved_stock=0,
     )
 
-    cache_key = f"wh:stock:88"
+    cache_key = "wh:stock:88"
     cache.delete(cache_key)
     assert cache.get(cache_key) is None
 

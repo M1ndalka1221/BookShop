@@ -33,8 +33,8 @@ def generate_mo(po_path, mo_path):
     header = struct.pack(
         "Iiiiiii", 0x950412DE, 0, len(keys), 7 * 4, 7 * 4 + len(keys) * 8, 0, 0
     )
-    tables = b"".join(struct.pack("ii", l, o) for l, o in koffsets) + b"".join(
-        struct.pack("ii", l, o) for l, o in voffsets
+    tables = b"".join(struct.pack("ii", length, o) for length, o in koffsets) + b"".join(
+        struct.pack("ii", length, o) for length, o in voffsets
     )
 
     with open(mo_path, "wb") as f:

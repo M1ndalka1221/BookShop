@@ -2,7 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 from rest_framework import status
 from users.models import CustomUser
-from warehouse.models import Warehouse, WarehouseItem, StockReservation
+from warehouse.models import Warehouse, WarehouseItem
 
 
 @pytest.fixture

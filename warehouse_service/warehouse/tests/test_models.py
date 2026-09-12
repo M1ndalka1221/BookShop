@@ -45,7 +45,7 @@ def test_warehouse_models():
         expires_at=timezone.now() + timedelta(minutes=15),
     )
     assert res.status == StockReservation.Status.PENDING
-    assert f"Order #505" in str(res)
+    assert "Order #505" in str(res)
 
     # Test StockTransaction
     user = CustomUser.objects.create_user(username="test_audit", password="password")
