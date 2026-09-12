@@ -6,7 +6,9 @@ from django.utils.translation import gettext_lazy as _
 
 class Warehouse(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("Warehouse Name"))
-    code = models.CharField(max_length=20, unique=True, verbose_name=_("Warehouse Code"))
+    code = models.CharField(
+        max_length=20, unique=True, verbose_name=_("Warehouse Code")
+    )
     location_details = models.CharField(
         max_length=255, blank=True, verbose_name=_("Location Details")
     )
@@ -118,7 +120,9 @@ class StockTransaction(models.Model):
         verbose_name=_("Transaction Type"),
     )
     quantity_change = models.IntegerField(verbose_name=_("Quantity Change"))
-    available_after = models.PositiveIntegerField(verbose_name=_("Available Stock After"))
+    available_after = models.PositiveIntegerField(
+        verbose_name=_("Available Stock After")
+    )
     reference_id = models.CharField(
         max_length=100, blank=True, verbose_name=_("Reference ID")
     )

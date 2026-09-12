@@ -46,7 +46,10 @@ def test_get_access_token_and_cache(client):
 
 
 def test_check_stock_success(client):
-    with patch("catalog.warehouse_client.WarehouseClient.get_access_token", return_value="mock_jwt"):
+    with patch(
+        "catalog.warehouse_client.WarehouseClient.get_access_token",
+        return_value="mock_jwt",
+    ):
         with patch("requests.request") as mock_req:
             mock_resp = MagicMock()
             mock_resp.status_code = 200
@@ -62,7 +65,10 @@ def test_check_stock_success(client):
 
 
 def test_reserve_stock_conflict_raises_exception(client):
-    with patch("catalog.warehouse_client.WarehouseClient.get_access_token", return_value="mock_jwt"):
+    with patch(
+        "catalog.warehouse_client.WarehouseClient.get_access_token",
+        return_value="mock_jwt",
+    ):
         with patch("requests.request") as mock_req:
             mock_resp = MagicMock()
             mock_resp.status_code = 409
@@ -71,7 +77,9 @@ def test_reserve_stock_conflict_raises_exception(client):
             mock_req.return_value = mock_resp
 
             with pytest.raises(WarehouseConflictError) as exc_info:
-                client.reserve_stock(order_id=5, items=[{"book_id": 42, "quantity": 100}])
+                client.reserve_stock(
+                    order_id=5, items=[{"book_id": 42, "quantity": 100}]
+                )
 
             assert exc_info.value.details["code"] == "INSUFFICIENT_STOCK"
 
@@ -86,8 +94,14 @@ def test_request_token_expired_retries_with_new_token(client):
     with patch.object(client, "get_access_token", side_effect=mock_get_token):
         with patch("requests.request") as mock_req:
             # First request returns 401 Unauthorized, second returns 200 OK
-            resp_401 = MagicMock(status_code=401, content=b'{"detail": "token expired"}')
-            resp_200 = MagicMock(status_code=200, content=b'{"status": "CONFIRMED"}', json=lambda: {"status": "CONFIRMED"})
+            resp_401 = MagicMock(
+                status_code=401, content=b'{"detail": "token expired"}'
+            )
+            resp_200 = MagicMock(
+                status_code=200,
+                content=b'{"status": "CONFIRMED"}',
+                json=lambda: {"status": "CONFIRMED"},
+            )
             mock_req.side_effect = [resp_401, resp_200]
 
             res = client.confirm_sale(order_id=10)
@@ -96,16 +110,29 @@ def test_request_token_expired_retries_with_new_token(client):
 
 
 def test_connection_error_and_retry(client):
-    with patch("catalog.warehouse_client.WarehouseClient.get_access_token", return_value="mock_jwt"):
-        with patch("requests.request", side_effect=requests.ConnectionError("Connection refused")):
+    with patch(
+        "catalog.warehouse_client.WarehouseClient.get_access_token",
+        return_value="mock_jwt",
+    ):
+        with patch(
+            "requests.request",
+            side_effect=requests.ConnectionError("Connection refused"),
+        ):
             with pytest.raises(WarehouseConnectionError):
                 client.release_stock(order_id=12)
 
 
 def test_server_error_raises_api_error(client):
-    with patch("catalog.warehouse_client.WarehouseClient.get_access_token", return_value="mock_jwt"):
+    with patch(
+        "catalog.warehouse_client.WarehouseClient.get_access_token",
+        return_value="mock_jwt",
+    ):
         with patch("requests.request") as mock_req:
-            mock_resp = MagicMock(status_code=500, content=b'{"detail": "Server error"}', json=lambda: {"detail": "Server error"})
+            mock_resp = MagicMock(
+                status_code=500,
+                content=b'{"detail": "Server error"}',
+                json=lambda: {"detail": "Server error"},
+            )
             mock_req.return_value = mock_resp
 
             with pytest.raises(WarehouseAPIError) as exc_info:

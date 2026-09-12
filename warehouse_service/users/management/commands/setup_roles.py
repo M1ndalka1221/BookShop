@@ -13,11 +13,15 @@ class Command(BaseCommand):
         operator_group, _ = Group.objects.get_or_create(name="Warehouse Operators")
         service_group, _ = Group.objects.get_or_create(name="Service Clients")
 
-        self.stdout.write(self.style.SUCCESS("Verified groups: Managers, Operators, Service Clients."))
+        self.stdout.write(
+            self.style.SUCCESS("Verified groups: Managers, Operators, Service Clients.")
+        )
 
         # Create or update service account for Project A
         svc_username = os.getenv("SERVICE_ACCOUNT_USERNAME", "bookshop_service")
-        svc_password = os.getenv("SERVICE_ACCOUNT_PASSWORD", "warehouse_secret_pass_2026")
+        svc_password = os.getenv(
+            "SERVICE_ACCOUNT_PASSWORD", "warehouse_secret_pass_2026"
+        )
 
         service_user, created = CustomUser.objects.get_or_create(
             username=svc_username,
@@ -34,5 +38,7 @@ class Command(BaseCommand):
 
         action = "Created" if created else "Updated"
         self.stdout.write(
-            self.style.SUCCESS(f"{action} service account '{svc_username}' for Project A communication.")
+            self.style.SUCCESS(
+                f"{action} service account '{svc_username}' for Project A communication."
+            )
         )

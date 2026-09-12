@@ -49,7 +49,9 @@ def test_custom_user_roles_and_properties():
 @pytest.mark.django_db
 def test_permission_classes():
     manager = CustomUser.objects.create_user(
-        username="manager2", password="password123", role=CustomUser.Role.WAREHOUSE_MANAGER
+        username="manager2",
+        password="password123",
+        role=CustomUser.Role.WAREHOUSE_MANAGER,
     )
     operator = CustomUser.objects.create_user(
         username="op2", password="password123", role=CustomUser.Role.WAREHOUSE_OPERATOR

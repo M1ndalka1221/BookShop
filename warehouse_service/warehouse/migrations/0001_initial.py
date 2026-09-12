@@ -16,72 +16,230 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Warehouse',
+            name="Warehouse",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='Warehouse Name')),
-                ('code', models.CharField(max_length=20, unique=True, verbose_name='Warehouse Code')),
-                ('location_details', models.CharField(blank=True, max_length=255, verbose_name='Location Details')),
-                ('is_active', models.BooleanField(default=True, verbose_name='Is Active')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=100, verbose_name="Warehouse Name"),
+                ),
+                (
+                    "code",
+                    models.CharField(
+                        max_length=20, unique=True, verbose_name="Warehouse Code"
+                    ),
+                ),
+                (
+                    "location_details",
+                    models.CharField(
+                        blank=True, max_length=255, verbose_name="Location Details"
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(default=True, verbose_name="Is Active"),
+                ),
             ],
             options={
-                'verbose_name': 'Warehouse',
-                'verbose_name_plural': 'Warehouses',
+                "verbose_name": "Warehouse",
+                "verbose_name_plural": "Warehouses",
             },
         ),
         migrations.CreateModel(
-            name='WarehouseItem',
+            name="WarehouseItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('book_id', models.PositiveIntegerField(db_index=True, verbose_name='BookShop Book ID')),
-                ('sku', models.CharField(max_length=50, unique=True, verbose_name='SKU')),
-                ('title', models.CharField(max_length=255, verbose_name='Item Title')),
-                ('available_stock', models.PositiveIntegerField(default=0, verbose_name='Available Stock')),
-                ('reserved_stock', models.PositiveIntegerField(default=0, verbose_name='Reserved Stock')),
-                ('min_threshold', models.PositiveIntegerField(default=5, verbose_name='Minimum Restock Threshold')),
-                ('shelf_location', models.CharField(blank=True, max_length=50, verbose_name='Shelf Location')),
-                ('warehouse', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='warehouse.warehouse', verbose_name='Warehouse')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "book_id",
+                    models.PositiveIntegerField(
+                        db_index=True, verbose_name="BookShop Book ID"
+                    ),
+                ),
+                (
+                    "sku",
+                    models.CharField(max_length=50, unique=True, verbose_name="SKU"),
+                ),
+                ("title", models.CharField(max_length=255, verbose_name="Item Title")),
+                (
+                    "available_stock",
+                    models.PositiveIntegerField(
+                        default=0, verbose_name="Available Stock"
+                    ),
+                ),
+                (
+                    "reserved_stock",
+                    models.PositiveIntegerField(
+                        default=0, verbose_name="Reserved Stock"
+                    ),
+                ),
+                (
+                    "min_threshold",
+                    models.PositiveIntegerField(
+                        default=5, verbose_name="Minimum Restock Threshold"
+                    ),
+                ),
+                (
+                    "shelf_location",
+                    models.CharField(
+                        blank=True, max_length=50, verbose_name="Shelf Location"
+                    ),
+                ),
+                (
+                    "warehouse",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="items",
+                        to="warehouse.warehouse",
+                        verbose_name="Warehouse",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Warehouse Item',
-                'verbose_name_plural': 'Warehouse Items',
-                'ordering': ['id'],
+                "verbose_name": "Warehouse Item",
+                "verbose_name_plural": "Warehouse Items",
+                "ordering": ["id"],
             },
         ),
         migrations.CreateModel(
-            name='StockTransaction',
+            name="StockTransaction",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('transaction_type', models.CharField(choices=[('RESTOCK', 'Restock'), ('RESERVE', 'Reserve'), ('CONFIRM_SALE', 'Confirm Sale'), ('RELEASE', 'Release'), ('ADJUSTMENT', 'Manual Adjustment')], max_length=20, verbose_name='Transaction Type')),
-                ('quantity_change', models.IntegerField(verbose_name='Quantity Change')),
-                ('available_after', models.PositiveIntegerField(verbose_name='Available Stock After')),
-                ('reference_id', models.CharField(blank=True, max_length=100, verbose_name='Reference ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created At')),
-                ('notes', models.TextField(blank=True, verbose_name='Notes')),
-                ('performed_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='stock_transactions', to=settings.AUTH_USER_MODEL, verbose_name='Performed By')),
-                ('item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='transactions', to='warehouse.warehouseitem', verbose_name='Item')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "transaction_type",
+                    models.CharField(
+                        choices=[
+                            ("RESTOCK", "Restock"),
+                            ("RESERVE", "Reserve"),
+                            ("CONFIRM_SALE", "Confirm Sale"),
+                            ("RELEASE", "Release"),
+                            ("ADJUSTMENT", "Manual Adjustment"),
+                        ],
+                        max_length=20,
+                        verbose_name="Transaction Type",
+                    ),
+                ),
+                (
+                    "quantity_change",
+                    models.IntegerField(verbose_name="Quantity Change"),
+                ),
+                (
+                    "available_after",
+                    models.PositiveIntegerField(verbose_name="Available Stock After"),
+                ),
+                (
+                    "reference_id",
+                    models.CharField(
+                        blank=True, max_length=100, verbose_name="Reference ID"
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="Created At"),
+                ),
+                ("notes", models.TextField(blank=True, verbose_name="Notes")),
+                (
+                    "performed_by",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="stock_transactions",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Performed By",
+                    ),
+                ),
+                (
+                    "item",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="transactions",
+                        to="warehouse.warehouseitem",
+                        verbose_name="Item",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Stock Transaction',
-                'verbose_name_plural': 'Stock Transactions',
-                'ordering': ['-created_at'],
+                "verbose_name": "Stock Transaction",
+                "verbose_name_plural": "Stock Transactions",
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='StockReservation',
+            name="StockReservation",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('order_id', models.PositiveIntegerField(db_index=True, verbose_name='BookShop Order ID')),
-                ('quantity', models.PositiveIntegerField(verbose_name='Quantity')),
-                ('status', models.CharField(choices=[('PENDING', 'Pending'), ('CONFIRMED', 'Confirmed'), ('RELEASED', 'Released'), ('EXPIRED', 'Expired')], default='PENDING', max_length=20, verbose_name='Status')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created At')),
-                ('expires_at', models.DateTimeField(verbose_name='Expires At')),
-                ('item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reservations', to='warehouse.warehouseitem', verbose_name='Item')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "order_id",
+                    models.PositiveIntegerField(
+                        db_index=True, verbose_name="BookShop Order ID"
+                    ),
+                ),
+                ("quantity", models.PositiveIntegerField(verbose_name="Quantity")),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("PENDING", "Pending"),
+                            ("CONFIRMED", "Confirmed"),
+                            ("RELEASED", "Released"),
+                            ("EXPIRED", "Expired"),
+                        ],
+                        default="PENDING",
+                        max_length=20,
+                        verbose_name="Status",
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="Created At"),
+                ),
+                ("expires_at", models.DateTimeField(verbose_name="Expires At")),
+                (
+                    "item",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reservations",
+                        to="warehouse.warehouseitem",
+                        verbose_name="Item",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Stock Reservation',
-                'verbose_name_plural': 'Stock Reservations',
-                'ordering': ['-created_at'],
+                "verbose_name": "Stock Reservation",
+                "verbose_name_plural": "Stock Reservations",
+                "ordering": ["-created_at"],
             },
         ),
     ]

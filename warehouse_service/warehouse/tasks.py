@@ -25,7 +25,11 @@ def release_expired_reservations():
         logger.info("No expired reservations found.")
         return 0
 
-    logger.info("Releasing %s expired reservations: %s", len(expired_reservations), expired_reservations)
+    logger.info(
+        "Releasing %s expired reservations: %s",
+        len(expired_reservations),
+        expired_reservations,
+    )
     count = release_stock(
         reservation_ids=expired_reservations,
         reason="Auto-released: reservation expired without payment",
@@ -39,7 +43,9 @@ def check_low_stock_alerts():
     Scheduled task scanning for items where available_stock <= min_threshold.
     Generates structured alerts for warehouse managers.
     """
-    low_stock_items = WarehouseItem.objects.filter(available_stock__lte=F("min_threshold"))
+    low_stock_items = WarehouseItem.objects.filter(
+        available_stock__lte=F("min_threshold")
+    )
 
     alerts = []
     for item in low_stock_items:
@@ -60,7 +66,9 @@ def check_low_stock_alerts():
             item.min_threshold,
         )
 
-    logger.info("Completed low stock check. Found %s items below threshold.", len(alerts))
+    logger.info(
+        "Completed low stock check. Found %s items below threshold.", len(alerts)
+    )
     return alerts
 
 
@@ -91,7 +99,9 @@ def process_bulk_restock(items_data: list, user_id=None):
                 )
                 processed.append({"book_id": book_id, "quantity": qty})
             except Exception as e:
-                logger.warning("Failed to restock item for book ID %s: %s", book_id, str(e))
+                logger.warning(
+                    "Failed to restock item for book ID %s: %s", book_id, str(e)
+                )
 
     logger.info("Processed bulk restock for %s items.", len(processed))
     return processed

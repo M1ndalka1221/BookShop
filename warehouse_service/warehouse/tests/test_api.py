@@ -153,7 +153,9 @@ def test_stock_reservation_flow(api_client, service_user, items_fixture):
 
 
 @pytest.mark.django_db
-def test_stock_reservation_conflict_insufficient_stock(api_client, service_user, items_fixture):
+def test_stock_reservation_conflict_insufficient_stock(
+    api_client, service_user, items_fixture
+):
     item1, item2 = items_fixture
     api_client.force_authenticate(user=service_user)
 
@@ -201,7 +203,9 @@ def test_stock_release_flow(api_client, service_user, items_fixture):
 
 
 @pytest.mark.django_db
-def test_restock_permissions_and_operation(api_client, service_user, manager_user, items_fixture):
+def test_restock_permissions_and_operation(
+    api_client, service_user, manager_user, items_fixture
+):
     item1, _ = items_fixture
 
     # Service user cannot restock (Manager only)

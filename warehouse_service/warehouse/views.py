@@ -43,7 +43,9 @@ class BaseAPIView(APIView):
         if hasattr(self, "_start_time"):
             duration_ms = (time.perf_counter() - self._start_time) * 1000
             response["X-Response-Time-Ms"] = f"{duration_ms:.2f}"
-            user_str = str(request.user) if request.user.is_authenticated else "Anonymous"
+            user_str = (
+                str(request.user) if request.user.is_authenticated else "Anonymous"
+            )
             logger.info(
                 "%s %s - User: %s - Status: %s - Latency: %.2fms",
                 request.method,
@@ -93,7 +95,9 @@ class ReserveStockAPIView(BaseInventoryAPIView):
             {
                 "status": "RESERVED",
                 "order_id": data["order_id"],
-                "reservations": StockReservationSerializer(reservations, many=True).data,
+                "reservations": StockReservationSerializer(
+                    reservations, many=True
+                ).data,
             },
             status=status.HTTP_200_OK,
         )
