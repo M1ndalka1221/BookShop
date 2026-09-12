@@ -1,0 +1,70 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Warehouse Service 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-12 19:00+0000\n"
+"PO-Revision-Date: 2026-09-12 19:00+0000\n"
+"Last-Translator: Eugene\n"
+"Language-Team: Ukrainian\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+
+msgid "Admin"
+msgstr "Адміністратор"
+
+msgid "Warehouse Manager"
+msgstr "Менеджер складу"
+
+msgid "Warehouse Operator"
+msgstr "Оператор складу"
+
+msgid "Service Account"
+msgstr "Сервісний акаунт"
+
+msgid "Warehouse"
+msgstr "Склад"
+
+msgid "Warehouses"
+msgstr "Склади"
+
+msgid "Warehouse Item"
+msgstr "Товар на складі"
+
+msgid "Warehouse Items"
+msgstr "Товари на складі"
+
+msgid "Available Stock"
+msgstr "Доступний залишок"
+
+msgid "Reserved Stock"
+msgstr "Зарезервований залишок"
+
+msgid "Minimum Restock Threshold"
+msgstr "Мінімальний поріг поповнення"
+
+msgid "Stock Reservation"
+msgstr "Резервація залишку"
+
+msgid "Stock Reservations"
+msgstr "Резервації залишку"
+
+msgid "Stock Transaction"
+msgstr "Транзакція по складу"
+
+msgid "Stock Transactions"
+msgstr "Транзакції по складу"
+
+msgid "Restock"
+msgstr "Поповнення"
+
+msgid "Reserve"
+msgstr "Резерв"
+
+msgid "Confirm Sale"
+msgstr "Підтвердження продажу"
+
+msgid "Release"
+msgstr "Звільнення"
